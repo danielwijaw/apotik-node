@@ -1,10 +1,12 @@
 const express = require("express")
 const router = express.Router()
-const biodataControllerFronend = require("../controller/frontend/biodataController")
+
+// Define Controllers
+const loginControllerFrontend = require("../controller/frontend/loginController")
+const loginControllerBackend = require("../controller/backend/loginController")
 
 // Frontend
-router.get("/", biodataControllerFronend.index)
-router.get("/create", biodataControllerFronend.create)
-router.get("/:id/edit", biodataControllerFronend.edit)
+router.get("/login", loginControllerFrontend.index)
+router.post("/login", loginControllerBackend.login)
 
 module.exports = router
