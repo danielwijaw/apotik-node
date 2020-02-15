@@ -1,12 +1,24 @@
-var http = require('http');
-
 module.exports = {
     index: function(req, res) {
-        if (req.param("error")== 1) { 
-            var error = "Gagal Login , Username atau Password Salah"
+        if(typeof req.cookies['cookielogin'] !== 'undefined'){
+            res.redirect('/apotek')
         }else{
-            error = "";
+            if (req.query.error == 1) { 
+                var error = "Gagal Login , Username atau Password Salah"
+            }else{
+                error = ""
+            }
+            res.render("login/login", { title: 'Login Administrator!', reporting: error})
         }
-        res.render("login/login", { title: 'Login Administrator!', reporting: error})
     },
+
+    main: function(req, res) {
+        if(typeof req.cookies['cookielogin'] !== 'undefined'){
+            res.redirect('/apotek')
+            return false
+        }else{
+            res.redirect('/login')
+            return false
+        }
+    }
 }

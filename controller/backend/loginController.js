@@ -1,7 +1,6 @@
 const Usermodel = require("../../model/User")
 const EncryptionLib = require("../../library/encryption")
 
-
 module.exports = {
     login: function(req, res) {
         req.body.password = EncryptionLib.encrypt(req.body.password)
@@ -10,7 +9,7 @@ module.exports = {
                 rows[0].id          = EncryptionLib.encrypt(rows[0].id.toString())
                 rows[0].user_access = EncryptionLib.encrypt(rows[0].user_access.toString())
                 rows = rows[0]
-                res.cookie('cookielogin', JSON.stringify(rows)).send(rows)
+                res.cookie('cookielogin', JSON.stringify(rows)).redirect('/apotek')
             }else{
                 res.redirect('/login?error=1')
             }

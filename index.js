@@ -1,31 +1,28 @@
+var compression = require('compression')
 const express = require("express")
 const app = express()
 var methodOverride = require("method-override")
 const path = require("path")
+var cookieParser = require('cookie-parser');
 const con = require("./config/db.js")
 
-// Checking Database Connection
-con.connect(function(err) {
-  if (err) throw err
-  console.log("Connected!")
-});
+// Compression
+app.use(compression())
 
 // Using pug template engine
 app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "pug")
 
-
 // Using assets dir
 app.use(express.static('assets'))
 
+// Cookie
+app.use(cookieParser())
+
 // connecting route to database
 app.use(function(req, res, next) {
-  if(req.originalUrl=='/'){
-    res.redirect('/login');
-  }else{
-    req.con = con
-    next()
-  }
+  req.con = con
+  next()
 })
 
 // parsing body request
