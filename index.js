@@ -1,9 +1,9 @@
-var compression = require('compression')
+const compression = require('compression')
 const express = require("express")
 const app = express()
-var methodOverride = require("method-override")
+const methodOverride = require("method-override")
 const path = require("path")
-var cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 const con = require("./config/db.js")
 
 // Compression

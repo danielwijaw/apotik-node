@@ -1,0 +1,23 @@
+html
+    head
+        title #{title}
+        link(rel='stylesheet', href='/vendor/fontawesome-free/css/all.min.css')
+        link(rel='stylesheet', href='/css/fontapis.css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i')
+        link(rel='stylesheet', href='/css/sb-admin-2.min.css')
+        script(src='/vendor/jquery/jquery.min.js')
+        script(src='/js/attribute.js')
+    body(id='page-top')
+        div(id='wrapper')
+            ul(id='accordionSidebar' class='navbar-nav bg-gradient-primary sidebar sidebar-dark accordion')
+            div(id='content-wrapper' class='d-flex flex-column')
+                div(id='content')
+                    div(id='topbar')
+                    div(id='root_data')
+                div(style='display:none')
+                    div(id='catching_error')
+                footer(class='sticky-footer bg-white')
+                    div(class='container my-auto')
+                        div(class='copyright text-center my-auto')
+                            span &copy; #{title}
+        script(type='text/javascript').
+            ajaxlink("#{url}","#root_data");ajaxlink("#{base_url}/apotek/sidebar","#accordionSidebar");ajaxlink("#{base_url}/apotek/topbar","#topbar");

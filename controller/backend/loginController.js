@@ -16,4 +16,9 @@ module.exports = {
             return false
         })
     },
+
+    logout: function(req, res) {
+        res.clearCookie('cookielogin')
+        res.redirect('/login')
+    }
 }
