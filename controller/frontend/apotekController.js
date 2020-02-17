@@ -1,7 +1,9 @@
+const confignpm = require("../../library/confignpm")
+var host = confignpm.base_url()
+
 module.exports = {
     // Base
     index: function(req, res) {
-        var host = req.protocol+'://'+req.headers.host;
         if(typeof req.cookies['cookielogin'] == 'undefined'){
             res.redirect('/login')
             return false;
@@ -15,12 +17,10 @@ module.exports = {
     },
 
     sidebar: function(req, res) {
-        var host = req.protocol+'://'+req.headers.host;
         res.render("apotek/sidebar", { base_url: host })
     },
 
     topbar: function(req, res) {
-        var host = req.protocol+'://'+req.headers.host
         var logout_site = host+'/backend/logout'
         res.render("apotek/topbar", { logout: logout_site })
     },

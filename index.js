@@ -14,7 +14,7 @@ app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "pug")
 
 // Using assets dir
-app.use(express.static('assets'))
+app.use(express.static('assets', { maxAge: 8640000}))
 
 // Cookie
 app.use(cookieParser())

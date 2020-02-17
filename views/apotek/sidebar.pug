@@ -1,5 +1,71 @@
 a(class='sidebar-brand d-flex align-items-center justify-content-center' href=`${base_url}/apotek`)
     div(class='sidebar-brand-icon')
         i(class='fas fa-home')
-    div(class='sidebar-brand-text mx-3') Panel Apotek
+    div(class='sidebar-brand-text mx-3') Dashboard Apotek
 hr(class='sidebar-divider my-0')
+
+li(class='nav-item')
+    a(class='nav-link collapsed' href='javascript:void(0)' data-toggle='collapse' data-target='#masterCollapseData' aria-expanded='true' aria-controls='collapseTwo')
+        i(class='fa fa-th')
+        span Master Data
+    div(id='masterCollapseData' class='collapse animated--fade-in' aria-labelledby='headingTwo' data-parent='#accordionSidebar')
+        div(class='bg-white py-2 collapse-inner rounded')
+            h6(class='collapse-header') Master Data
+            a(class='collapse-item' href=`${base_url}/apotek`) Master Gudang
+            a(class='collapse-item' href=`${base_url}/apotek`) Data Jenis Barang
+            a(class='collapse-item' href=`${base_url}/apotek`) Kelas Terapi
+            a(class='collapse-item' href=`${base_url}/apotek`) Jenis Racikan
+            a(class='collapse-item' href=`${base_url}/apotek`) Detail Batch
+            a(class='collapse-item' href=`${base_url}/apotek`) Data Pabrik
+            a(class='collapse-item' href=`${base_url}/apotek`) Data Satuan Barang
+            a(class='collapse-item' href=`${base_url}/apotek`) Data Supplier
+            a(class='collapse-item' href=`${base_url}/apotek`) Master Interaksi
+    
+    a(class='nav-link collapsed' href='javascript:void(0)' data-toggle='collapse' data-target='#masterCollapseBarang' aria-expanded='true' aria-controls='collapseTwo')
+        i(class='fas fa-fw fa-folder')
+        span Master Barang
+    div(id='masterCollapseBarang' class='collapse animated--fade-in' aria-labelledby='headingTwo' data-parent='#accordionSidebar')
+        div(class='bg-white py-2 collapse-inner rounded')
+            h6(class='collapse-header') Master Barang
+            a(class='collapse-item' href=`${base_url}/apotek`) Alat Kesehatan
+            a(class='collapse-item' href=`${base_url}/apotek`) BHP
+            a(class='collapse-item' href=`${base_url}/apotek`) Obat
+    
+    a(class='nav-link collapsed' href='javascript:void(0)' data-toggle='collapse' data-target='#masterCollapseManSto' aria-expanded='true' aria-controls='collapseTwo')
+        i(class='fas fa-fw fa-folder-open')
+        span Management Stock
+    div(id='masterCollapseManSto' class='collapse animated--fade-in' aria-labelledby='headingTwo' data-parent='#accordionSidebar')
+        div(class='bg-white py-2 collapse-inner rounded')
+            h6(class='collapse-header') Management Stock
+            a(class='collapse-item' href=`${base_url}/apotek`) Stock Opname
+            a(class='collapse-item' href=`${base_url}/apotek`) Stock Barang
+            a(class='collapse-item' href=`${base_url}/apotek`) Stock Batch
+            a(class='collapse-item' href=`${base_url}/apotek`) Hapus Batch Lama
+    
+    a(class='nav-link collapsed' href='javascript:void(0)' data-toggle='collapse' data-target='#masterCollapseManGd' aria-expanded='true' aria-controls='collapseTwo')
+        i(class='fas fa-fw fa-folder-open')
+        span Management Gudang
+    div(id='masterCollapseManGd' class='collapse animated--fade-in' aria-labelledby='headingTwo' data-parent='#accordionSidebar')
+        div(class='bg-white py-2 collapse-inner rounded')
+            h6(class='collapse-header') Management Gudang
+    
+    a(class='nav-link collapsed' href='javascript:void(0)' data-toggle='collapse' data-target='#masterCollapseLap' aria-expanded='true' aria-controls='collapseTwo')
+        i(class='fas fa-fw fa-folder-open')
+        span Laporan
+    div(id='masterCollapseLap' class='collapse animated--fade-in' aria-labelledby='headingTwo' data-parent='#accordionSidebar')
+        div(class='bg-white py-2 collapse-inner rounded')
+            h6(class='collapse-header') Laporan
+            a(class='collapse-item' href=`${base_url}/apotek`) Lap. Bonus Apoteker
+            a(class='collapse-item' href=`${base_url}/apotek`) Lap. Penggunaan Barang
+            a(class='collapse-item' href=`${base_url}/apotek`) Lap. Embalase
+            a(class='collapse-item' href=`${base_url}/apotek`) TOP 50 Barang
+            a(class='collapse-item' href=`${base_url}/apotek`) TOP 50 Harga Barang
+    
+    a(class='nav-link collapsed' href='javascript:void(0)' data-toggle='collapse' data-target='#masterCollapseSet' aria-expanded='true' aria-controls='collapseTwo')
+        i(class='fas fa-fw fa-cog')
+        span Pengaturan
+    div(id='masterCollapseSet' class='collapse animated--fade-in' aria-labelledby='headingTwo' data-parent='#accordionSidebar')
+        div(class='bg-white py-2 collapse-inner rounded')
+            h6(class='collapse-header') Pengaturan
+            a(class='collapse-item' href=`${base_url}/apotek`) Embalase
+            a(class='collapse-item' href=`${base_url}/apotek`) Harga Jual
