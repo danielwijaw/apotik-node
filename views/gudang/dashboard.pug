@@ -1,0 +1,43 @@
+link(rel='stylesheet', href='/css/datatables.min.css')
+script(src='/js/datatables.min.js')
+div(class='col-xl-12 col-lg-12')
+    div(class='card shadow mb-4')
+        div(class='card-header py-3 d-flex flex-row align-items-center justify-content-between')
+            h6(class='m-0 font-weight-bold text-primary') Master Data Gudang
+        div(class='card-body')
+            button(type="button" onclick="insertnewdata()" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalgudang") Tambah Data
+
+//- Modal Show
+div(id="modalgudang" class="modal fade" role="dialog")
+    div(class="modal-dialog modal-lg")
+        div(class="modal-content")
+            div(class="modal-header")
+                h4(class="modal-title" id="modalgudangtitle")
+                button(type="button" class="close" data-dismiss="modal") &times;
+            div(class="modal-body")
+                div(id="modalgudanghere" class="col-md-12")
+
+script(type='text/javascript').
+    function insertnewdata(){
+        $('#modalgudangtitle').html("Tambah Data Gudang")
+        $('#modalgudanghere').html('Loading Data..')
+        $('#modalgudanghere').html(`
+            <form action="#{base_url}/backend/gudang/create" method="POST">
+                <input type="hidden" name="_csrf" value="#{csrfToken}">
+                <input type="hidden" class="form-control" name="result[k0]" value="master_gudang" required>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Nama Gudang</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="result[k2]" placeholder="Masukan Nama Gudang" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Tambah Data">
+                </div>
+            </form>
+        `)
+    }

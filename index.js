@@ -13,16 +13,26 @@ app.use(compression())
 app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "pug")
 
-// Using assets dir
+// Using assets dir and cache
 app.use(express.static('assets', { maxAge: 8640000}))
 
 // Cookie
 app.use(cookieParser())
 
-// connecting route to database
+// Middleware Database and Verify Login
 app.use(function(req, res, next) {
-  req.con = con
-  next()
+  if(!req.originalUrl.includes("/apotek") && !req.originalUrl.includes("/gudang")){
+    req.con = con
+    next()
+  }else{
+    if(typeof req.cookies['cookielogin'] == 'undefined'){
+      res.redirect('/login')
+      return false
+    }else{
+      req.con = con
+      next()
+    }
+  }
 })
 
 // parsing body request

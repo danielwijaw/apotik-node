@@ -4,10 +4,6 @@ var host = confignpm.base_url()
 module.exports = {
     // Base
     index: function(req, res) {
-        if(typeof req.cookies['cookielogin'] == 'undefined'){
-            res.redirect('/login')
-            return false;
-        }
         site = host+"/apotek/dashboard"
         res.render("apotek/main", { title: 'Panel Apotek', url: site, base_url: host})
     },

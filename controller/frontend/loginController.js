@@ -8,7 +8,7 @@ module.exports = {
             }else{
                 error = ""
             }
-            res.render("login/login", { title: 'Login Administrator!', reporting: error})
+            res.render("login/login", { title: 'Login Administrator!', reporting: error, csrfToken: req.csrfToken()})
         }
     },
 

@@ -15,6 +15,7 @@ html
                                     div(class='text-center')
                                         h1(class='h4 text-gray-900 mb-4') Login Administrator! <br/> #{reporting}
                                     form(action='/backend/login' method='POST' class='user')
+                                        input(type="hidden" name="_csrf" value=`${csrfToken}`)
                                         div(class='form-group')
                                             input(type='text' name='username' class='form-control form-control-user' placeholder='Username' required)
                                         div(class='form-group')
