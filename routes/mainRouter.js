@@ -42,4 +42,8 @@ router.get("/jenisracikan/dashboard", csrfProtection, masterdataControllerFronte
 router.get("/satuanbarang", masterdataControllerFrontend.satuanbarangindex)
 router.get("/satuanbarang/dashboard", csrfProtection, masterdataControllerFrontend.satuanbarangdashboard)
 
+// Data Pabrik
+router.get("/pabrik", masterdataControllerFrontend.pabrikindex)
+router.get("/pabrik/dashboard", csrfProtection, masterdataControllerFrontend.pabrikdashboard)
+
 module.exports = router

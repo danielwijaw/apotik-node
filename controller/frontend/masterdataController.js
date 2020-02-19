@@ -51,4 +51,14 @@ module.exports = {
     satuanbarangdashboard: function(req, res) {
         res.render("satuanbarang/dashboard", { base_url: host, csrfToken: req.csrfToken() })
     },
+
+    // Data Pabrik
+    pabrikindex: function(req, res) {
+        site = host+"/pabrik/dashboard"
+        res.render("apotek/main", { title: 'Master Data Pabrik', url: site, base_url: host})
+    },
+
+    pabrikdashboard: function(req, res) {
+        res.render("pabrik/dashboard", { base_url: host, csrfToken: req.csrfToken() })
+    },
 }

@@ -1,0 +1,185 @@
+link(rel='stylesheet', href='/css/datatables.min.css')
+script(src='/js/datatables.min.js')
+div(class='col-xl-12 col-lg-12')
+    div(class='card shadow mb-4')
+        div(class='card-header py-3 d-flex flex-row align-items-center justify-content-between')
+            h6(class='m-0 font-weight-bold text-primary') Master Data Pabrik
+        div(class='card-body')
+            button(type="button" onclick="insertnewdata()" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalpabrik") Tambah Data
+            br
+            br
+            table(id="datatables_master_data_pabrik" style="width:100%")
+                thead
+                    tr
+                        th Kode Pabrik
+                        th Nama Pabrik
+                        th Alamat Pabrik
+                        th Kota Pabrik
+                        th Telepon Pabrik
+                        th &nbsp;
+                tbody
+                tfoot  
+                    tr
+                        th Kode Pabrik
+                        th Nama Pabrik
+                        th Alamat Pabrik
+                        th Kota Pabrik
+                        th Telepon Pabrik
+                        th &nbsp;
+
+//- Modal Show
+div(id="modalpabrik" class="modal fade" role="dialog")
+    div(class="modal-dialog modal-lg")
+        div(class="modal-content")
+            div(class="modal-header")
+                h4(class="modal-title" id="modalpabriktitle")
+                button(type="button" class="close" data-dismiss="modal") &times;
+            div(class="modal-body")
+                div(id="modalpabrikhere" class="col-md-12")
+
+script(type='text/javascript').
+    $(document).ready(function() {
+        $('#datatables_master_data_pabrik').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax"      : "#{host}/backend/pabrik/data"
+        });
+    } );
+    function editpabrik(id){
+        $('#modalpabriktitle').html("Edit Data Pabrik")
+        $('#modalpabrikhere').html('Loading Data..')
+        $.ajax({
+            url: "#{base_url}/backend/pabrik/view?id="+id,
+            contentType: false,
+            cache: true,
+            processData: false,
+            success: function(data) {
+                $('#modalpabrikhere').html(`
+                    <form action="#{base_url}/backend/pabrik/update?id=`+id+`" method="POST">
+                        <input type="hidden" name="_csrf" value="#{csrfToken}">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Kode Pabrik</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" value="`+data.k1+`" class="form-control" name="result[k1]" placeholder="Masukan Kode Pabrik" required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Nama Pabrik</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" value="`+data.k2+`" class="form-control" name="result[k2]" placeholder="Masukan Nama Pabrik" required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Alamat Pabrik</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" value="`+data.k3+`" class="form-control" name="result[k3]" placeholder="Masukan Alamat Pabrik" required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Kota Pabrik</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" value="`+data.k4+`" class="form-control" name="result[k4]" placeholder="Masukan Kota Pabrik" required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Telepon Pabrik</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" value="`+data.k5+`" class="form-control" name="result[k5]" placeholder="Masukan Telepon Pabrik" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Perbarui Data">
+                        </div>
+                    </form>
+                `)
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#modalpabrikhere').html("<p class='ajaxloadingdata'>Error Catching Data</p>");
+                $("#catching_error").html(XMLHttpRequest.responseText); 
+                if (XMLHttpRequest.status == 0) {
+                alert(' Check Your Network.');
+                } else if (XMLHttpRequest.status == 404) {
+                alert('Requested URL not found.');
+                } else if (XMLHttpRequest.status == 500) {
+                alert('Internel Server Error.');
+                }  else {
+                alert('Unknow Error.\n' + XMLHttpRequest.responseText);
+                } 
+            }
+        });
+    }
+    function hapuspabrik(id){
+        var check = confirm("Anda Yakin Akan Menghapus Data?");
+        if (check == true) {
+            window.location = "#{base_url}/backend/pabrik/delete?id="+id;
+        }
+        else {
+            return false;
+        }
+    }
+    function insertnewdata(){
+        $('#modalpabriktitle').html("Tambah Data Pabrik")
+        $('#modalpabrikhere').html('Loading Data..')
+        $('#modalpabrikhere').html(`
+            <form action="#{base_url}/backend/pabrik/create" method="POST">
+                <input type="hidden" name="_csrf" value="#{csrfToken}">
+                <div class="form-group">
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Kode Pabrik</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="result[k1]" placeholder="Masukan Kode Pabrik" required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Nama Pabrik</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="result[k2]" placeholder="Masukan Nama Pabrik" required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Alamat Pabrik</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="result[k3]" placeholder="Masukan Alamat Pabrik" required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Kota Pabrik</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="result[k4]" placeholder="Masukan Kota Pabrik" required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Telepon Pabrik</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="result[k5]" placeholder="Masukan Telepon Pabrik" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Tambah Data">
+                </div>
+            </form>
+        `)
+    }

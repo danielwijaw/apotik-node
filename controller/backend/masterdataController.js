@@ -1,10 +1,11 @@
-const Gudangmodel = require("../../model/Gudang")
-const Jenisbarangmodel = require("../../model/Jenisbarang")
-const Kelasterapimodel = require("../../model/Kelasterapi")
+const Gudangmodel       = require("../../model/Gudang")
+const Jenisbarangmodel  = require("../../model/Jenisbarang")
+const Kelasterapimodel  = require("../../model/Kelasterapi")
 const Jenisracikanmodel = require("../../model/Jenisracikan")
 const Satuanbarangmodel = require("../../model/Satuanbarang")
-const EncryptionLib = require("../../library/encryption")
-const async = require('async');
+const Pabrikmodel       = require("../../model/Pabrik")
+const EncryptionLib     = require("../../library/encryption")
+const async             = require('async');
 
 module.exports = {
     // Gudang
@@ -608,4 +609,124 @@ module.exports = {
             return false;
         })
     },
+
+    // Data Pabrik
+    pabrikcreate: function(req, res) {
+        // Attribute Insert
+        req.body.result.k0 = "master_pabrik"
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Insert
+        Pabrikmodel.insert(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/pabrik')
+                return false
+                res.send(req.body)
+            }
+        })
+    },
+    
+    pabrikdata: function(req, res){
+        async.parallel({
+            count: cb => Pabrikmodel.countdata(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya[0].recordsTotal);
+                    }
+                    
+                }
+            ),
+            data: cb => Pabrikmodel.getfull(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya);
+                    }
+                    
+                }
+            )
+        },(err, response) => {
+            var catchdata = []
+            if(err){
+                res.send(err)
+                return false
+            }
+            var num = 0;
+            response.data.forEach(element => {
+                var numplus = num++
+                catchdata[numplus] = {
+                    '0': response.data[numplus].k1,
+                    '1': response.data[numplus].k2,
+                    '2': response.data[numplus].k3,
+                    '3': response.data[numplus].k4,
+                    '4': response.data[numplus].k5,
+                    '5': `
+                        <button data-toggle="modal" data-target="#modalpabrik" onclick="editpabrik('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                        <button onclick="hapuspabrik('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                }
+            })
+            data = {
+                draw: req.query.draw,
+                status: true,
+                recordsTotal: response.count,
+                recordsFiltered: response.count,
+                data: catchdata
+            }
+            res.send(data)
+        })
+    },
+
+    pabrikupdate: function(req, res) {
+        req.body.isid = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute Insert
+        req.body.result.k0 = "master_pabrik"
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Update
+        Pabrikmodel.update(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/pabrik')
+                return false
+            }
+        })
+    },
+
+    pabrikview: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Get ID
+        Pabrikmodel.view(req.con, req.query.id, function(err, rows) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.send(rows[0])
+                return false
+            }
+        })
+    },
+
+    pabrikdelete: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.query.id_update = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Get ID
+        Pabrikmodel.destroy(req.con, req.query, function(err) {
+            res.redirect("/pabrik")
+            return false;
+        })
+    }
 }

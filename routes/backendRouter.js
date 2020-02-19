@@ -47,4 +47,11 @@ router.get("/satuanbarang/data", masterdataControllerBackend.satuanbarangdata)
 router.get("/satuanbarang/view", masterdataControllerBackend.satuanbarangview)
 router.get("/satuanbarang/delete", masterdataControllerBackend.satuanbarangdelete)
 
+// Data Pabrik
+router.post("/pabrik/create", csrfProtection, masterdataControllerBackend.pabrikcreate)
+router.post("/pabrik/update", csrfProtection, masterdataControllerBackend.pabrikupdate)
+router.get("/pabrik/data", masterdataControllerBackend.pabrikdata)
+router.get("/pabrik/view", masterdataControllerBackend.pabrikview)
+router.get("/pabrik/delete", masterdataControllerBackend.pabrikdelete)
+
 module.exports = router
