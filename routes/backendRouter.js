@@ -54,4 +54,11 @@ router.get("/pabrik/data", masterdataControllerBackend.pabrikdata)
 router.get("/pabrik/view", masterdataControllerBackend.pabrikview)
 router.get("/pabrik/delete", masterdataControllerBackend.pabrikdelete)
 
+// Supplier
+router.post("/supplier/create", csrfProtection, masterdataControllerBackend.suppliercreate)
+router.post("/supplier/update", csrfProtection, masterdataControllerBackend.supplierupdate)
+router.get("/supplier/data", masterdataControllerBackend.supplierdata)
+router.get("/supplier/view", masterdataControllerBackend.supplierview)
+router.get("/supplier/delete", masterdataControllerBackend.supplierdelete)
+
 module.exports = router

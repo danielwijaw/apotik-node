@@ -4,6 +4,7 @@ const Kelasterapimodel  = require("../../model/Kelasterapi")
 const Jenisracikanmodel = require("../../model/Jenisracikan")
 const Satuanbarangmodel = require("../../model/Satuanbarang")
 const Pabrikmodel       = require("../../model/Pabrik")
+const Suppliermodel       = require("../../model/Supplier")
 const EncryptionLib     = require("../../library/encryption")
 const async             = require('async');
 
@@ -726,6 +727,127 @@ module.exports = {
         // Get ID
         Pabrikmodel.destroy(req.con, req.query, function(err) {
             res.redirect("/pabrik")
+            return false;
+        })
+    },
+
+    // Supplier
+    suppliercreate: function(req, res) {
+        // Attribute Insert
+        req.body.result.k0 = "master_supplier"
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Insert
+        Suppliermodel.insert(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/supplier')
+                return false
+                res.send(req.body)
+            }
+        })
+    },
+    
+    supplierdata: function(req, res){
+        async.parallel({
+            count: cb => Suppliermodel.countdata(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya[0].recordsTotal);
+                    }
+                    
+                }
+            ),
+            data: cb => Suppliermodel.getfull(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya);
+                    }
+                    
+                }
+            )
+        },(err, response) => {
+            var catchdata = []
+            if(err){
+                res.send(err)
+                return false
+            }
+            var num = 0;
+            response.data.forEach(element => {
+                var numplus = num++
+                catchdata[numplus] = {
+                    '0': response.data[numplus].k1,
+                    '1': response.data[numplus].k2,
+                    '2': response.data[numplus].k3,
+                    '3': response.data[numplus].k4,
+                    '4': response.data[numplus].k5,
+                    '5': response.data[numplus].k6,
+                    '6': `
+                        <button data-toggle="modal" data-target="#modalsupplier" onclick="editsupplier('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                        <button onclick="hapussupplier('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                }
+            })
+            data = {
+                draw: req.query.draw,
+                status: true,
+                recordsTotal: response.count,
+                recordsFiltered: response.count,
+                data: catchdata
+            }
+            res.send(data)
+        })
+    },
+
+    supplierupdate: function(req, res) {
+        req.body.isid = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute Insert
+        req.body.result.k0 = "master_supplier"
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Update
+        Suppliermodel.update(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/supplier')
+                return false
+            }
+        })
+    },
+
+    supplierview: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Get ID
+        Suppliermodel.view(req.con, req.query.id, function(err, rows) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.send(rows[0])
+                return false
+            }
+        })
+    },
+
+    supplierdelete: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.query.id_update = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Get ID
+        Suppliermodel.destroy(req.con, req.query, function(err) {
+            res.redirect("/supplier")
             return false;
         })
     }
