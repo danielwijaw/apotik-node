@@ -38,4 +38,8 @@ router.get("/kelasterapi/dashboard", csrfProtection, masterdataControllerFronten
 router.get("/jenisracikan", masterdataControllerFrontend.jenisracikanindex)
 router.get("/jenisracikan/dashboard", csrfProtection, masterdataControllerFrontend.jenisracikandashboard)
 
+// Satuan Barang
+router.get("/satuanbarang", masterdataControllerFrontend.satuanbarangindex)
+router.get("/satuanbarang/dashboard", csrfProtection, masterdataControllerFrontend.satuanbarangdashboard)
+
 module.exports = router

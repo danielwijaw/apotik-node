@@ -40,4 +40,11 @@ router.get("/jenisracikan/data", masterdataControllerBackend.jenisracikandata)
 router.get("/jenisracikan/view", masterdataControllerBackend.jenisracikanview)
 router.get("/jenisracikan/delete", masterdataControllerBackend.jenisracikandelete)
 
+// Satuan Barang
+router.post("/satuanbarang/create", csrfProtection, masterdataControllerBackend.satuanbarangcreate)
+router.post("/satuanbarang/update", csrfProtection, masterdataControllerBackend.satuanbarangupdate)
+router.get("/satuanbarang/data", masterdataControllerBackend.satuanbarangdata)
+router.get("/satuanbarang/view", masterdataControllerBackend.satuanbarangview)
+router.get("/satuanbarang/delete", masterdataControllerBackend.satuanbarangdelete)
+
 module.exports = router

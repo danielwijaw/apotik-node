@@ -2,6 +2,7 @@ const Gudangmodel = require("../../model/Gudang")
 const Jenisbarangmodel = require("../../model/Jenisbarang")
 const Kelasterapimodel = require("../../model/Kelasterapi")
 const Jenisracikanmodel = require("../../model/Jenisracikan")
+const Satuanbarangmodel = require("../../model/Satuanbarang")
 const EncryptionLib = require("../../library/encryption")
 const async = require('async');
 
@@ -484,6 +485,126 @@ module.exports = {
         // Get ID
         Jenisracikanmodel.destroy(req.con, req.query, function(err) {
             res.redirect("/jenisracikan")
+            return false;
+        })
+    },
+
+    // Satuan Barang
+    satuanbarangcreate: function(req, res) {
+        // Attribute Insert
+        req.body.result.k0 = "master_satuanbarang"
+        req.body.result.k1 = req.body.result.k2.toLowerCase()
+        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Insert
+        Satuanbarangmodel.insert(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/satuanbarang')
+                return false
+                res.send(req.body)
+            }
+        })
+    },
+    
+    satuanbarangdata: function(req, res){
+        async.parallel({
+            count: cb => Satuanbarangmodel.countdata(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya[0].recordsTotal);
+                    }
+                    
+                }
+            ),
+            data: cb => Satuanbarangmodel.getfull(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya);
+                    }
+                    
+                }
+            )
+        },(err, response) => {
+            var catchdata = []
+            if(err){
+                res.send(err)
+                return false
+            }
+            var num = 0;
+            response.data.forEach(element => {
+                var numplus = num++
+                catchdata[numplus] = {
+                    '0': response.data[numplus].text,
+                    '1': `
+                        <button data-toggle="modal" data-target="#modalsatuanbarang" onclick="editsatuanbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                        <button onclick="hapussatuanbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                }
+            })
+            data = {
+                draw: req.query.draw,
+                status: true,
+                recordsTotal: response.count,
+                recordsFiltered: response.count,
+                data: catchdata
+            }
+            res.send(data)
+        })
+    },
+
+    satuanbarangupdate: function(req, res) {
+        req.body.isid = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute Insert
+        req.body.result.k0 = "master_satuanbarang"
+        req.body.result.k1 = req.body.result.k2.toLowerCase()
+        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Update
+        Satuanbarangmodel.update(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/satuanbarang')
+                return false
+            }
+        })
+    },
+
+    satuanbarangview: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Get ID
+        Satuanbarangmodel.view(req.con, req.query.id, function(err, rows) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.send(rows[0])
+                return false
+            }
+        })
+    },
+
+    satuanbarangdelete: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.query.id_update = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Get ID
+        Satuanbarangmodel.destroy(req.con, req.query, function(err) {
+            res.redirect("/satuanbarang")
             return false;
         })
     },
