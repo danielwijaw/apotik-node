@@ -8,7 +8,7 @@ module.exports = {
         res.render("apotek/main", { title: 'Master Data Gudang', url: site, base_url: host})
     },
 
-    dashboard: function(req, res) {
+    gudangdashboard: function(req, res) {
         res.render("gudang/dashboard", { base_url: host, csrfToken: req.csrfToken() })
     },
 }

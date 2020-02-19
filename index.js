@@ -6,6 +6,7 @@ const path = require("path")
 const cookieParser = require('cookie-parser');
 const con = require("./config/db.js")
 
+
 // Compression
 app.use(compression())
 

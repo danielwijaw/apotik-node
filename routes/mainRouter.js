@@ -23,6 +23,6 @@ router.get("/apotek/dashboard", apotekControllerFrontend.dashboard)
 
 // Master Data
 router.get("/gudang", masterdataControllerFrontend.gudangindex)
-router.get("/gudang/dashboard", csrfProtection, masterdataControllerFrontend.dashboard)
+router.get("/gudang/dashboard", csrfProtection, masterdataControllerFrontend.gudangdashboard)
 
 module.exports = router

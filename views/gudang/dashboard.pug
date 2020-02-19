@@ -6,6 +6,18 @@ div(class='col-xl-12 col-lg-12')
             h6(class='m-0 font-weight-bold text-primary') Master Data Gudang
         div(class='card-body')
             button(type="button" onclick="insertnewdata()" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalgudang") Tambah Data
+            br
+            br
+            table(id="datatables_master_data_gudang" style="width:100%")
+                thead
+                    tr
+                        th Nama Gudang
+                        th &nbsp;
+                tbody
+                tfoot  
+                    tr
+                        th Nama Gudang
+                        th &nbsp;
 
 //- Modal Show
 div(id="modalgudang" class="modal fade" role="dialog")
@@ -18,13 +30,71 @@ div(id="modalgudang" class="modal fade" role="dialog")
                 div(id="modalgudanghere" class="col-md-12")
 
 script(type='text/javascript').
+    $(document).ready(function() {
+        $('#datatables_master_data_gudang').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax"      : "#{host}/backend/gudang/data"
+        });
+    } );
+    function editgudang(id){
+        $('#modalgudangtitle').html("Edit Data Gudang")
+        $('#modalgudanghere').html('Loading Data..')
+        $.ajax({
+            url: "#{base_url}/backend/gudang/view?id="+id,
+            contentType: false,
+            cache: true,
+            processData: false,
+            success: function(data) {
+                $('#modalgudanghere').html(`
+                    <form action="#{base_url}/backend/gudang/update?id=`+id+`" method="POST">
+                        <input type="hidden" name="_csrf" value="#{csrfToken}">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>Nama Gudang</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" value="`+data.text+`" class="form-control" name="result[k2]" placeholder="Masukan Nama Gudang" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Perbarui Data">
+                        </div>
+                    </form>
+                `)
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#modalgudanghere').html("<p class='ajaxloadingdata'>Error Catching Data</p>");
+                $("#catching_error").html(XMLHttpRequest.responseText); 
+                if (XMLHttpRequest.status == 0) {
+                alert(' Check Your Network.');
+                } else if (XMLHttpRequest.status == 404) {
+                alert('Requested URL not found.');
+                } else if (XMLHttpRequest.status == 500) {
+                alert('Internel Server Error.');
+                }  else {
+                alert('Unknow Error.\n' + XMLHttpRequest.responseText);
+                } 
+            }
+        });
+    }
+    function hapusgudang(id){
+        var check = confirm("Anda Yakin Akan Menghapus Data?");
+        if (check == true) {
+            window.location = "#{base_url}/backend/gudang/delete?id="+id;
+        }
+        else {
+            return false;
+        }
+    }
     function insertnewdata(){
         $('#modalgudangtitle').html("Tambah Data Gudang")
         $('#modalgudanghere').html('Loading Data..')
         $('#modalgudanghere').html(`
             <form action="#{base_url}/backend/gudang/create" method="POST">
                 <input type="hidden" name="_csrf" value="#{csrfToken}">
-                <input type="hidden" class="form-control" name="result[k0]" value="master_gudang" required>
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-3">
