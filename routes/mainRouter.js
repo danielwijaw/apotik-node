@@ -22,7 +22,16 @@ router.get("/apotek", apotekControllerFrontend.index)
 router.get("/apotek/dashboard", apotekControllerFrontend.dashboard)
 
 // Master Data
+// Gudang
 router.get("/gudang", masterdataControllerFrontend.gudangindex)
 router.get("/gudang/dashboard", csrfProtection, masterdataControllerFrontend.gudangdashboard)
+
+// Jenis Barang
+router.get("/jenisbarang", masterdataControllerFrontend.jenisbarangindex)
+router.get("/jenisbarang/dashboard", csrfProtection, masterdataControllerFrontend.jenisbarangdashboard)
+
+// Kelas Terapi
+router.get("/kelasterapi", masterdataControllerFrontend.kelasterapiindex)
+router.get("/kelasterapi/dashboard", csrfProtection, masterdataControllerFrontend.kelasterapidashboard)
 
 module.exports = router

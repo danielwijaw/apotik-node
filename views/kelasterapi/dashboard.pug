@@ -1,0 +1,113 @@
+link(rel='stylesheet', href='/css/datatables.min.css')
+script(src='/js/datatables.min.js')
+div(class='col-xl-12 col-lg-12')
+    div(class='card shadow mb-4')
+        div(class='card-header py-3 d-flex flex-row align-items-center justify-content-between')
+            h6(class='m-0 font-weight-bold text-primary') Master Data Kelas Terapi
+        div(class='card-body')
+            button(type="button" onclick="insertnewdata()" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalkelasterapi") Tambah Data
+            br
+            br
+            table(id="datatables_master_data_kelasterapi" style="width:100%")
+                thead
+                    tr
+                        th Nama Kelas Terapi
+                        th &nbsp;
+                tbody
+                tfoot  
+                    tr
+                        th Nama Kelas Terapi
+                        th &nbsp;
+
+//- Modal Show
+div(id="modalkelasterapi" class="modal fade" role="dialog")
+    div(class="modal-dialog modal-lg")
+        div(class="modal-content")
+            div(class="modal-header")
+                h4(class="modal-title" id="modalkelasterapititle")
+                button(type="button" class="close" data-dismiss="modal") &times;
+            div(class="modal-body")
+                div(id="modalkelasterapihere" class="col-md-12")
+
+script(type='text/javascript').
+    $(document).ready(function() {
+        $('#datatables_master_data_kelasterapi').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax"      : "#{host}/backend/kelasterapi/data"
+        });
+    } );
+    function editkelasterapi(id){
+        $('#modalkelasterapititle').html("Edit Data Kelas Terapi")
+        $('#modalkelasterapihere').html('Loading Data..')
+        $.ajax({
+            url: "#{base_url}/backend/kelasterapi/view?id="+id,
+            contentType: false,
+            cache: true,
+            processData: false,
+            success: function(data) {
+                $('#modalkelasterapihere').html(`
+                    <form action="#{base_url}/backend/kelasterapi/update?id=`+id+`" method="POST">
+                        <input type="hidden" name="_csrf" value="#{csrfToken}">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>Nama Kelas Terapi</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" value="`+data.text+`" class="form-control" name="result[k2]" placeholder="Masukan Nama Kelas Terapi" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Perbarui Data">
+                        </div>
+                    </form>
+                `)
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#modalkelasterapihere').html("<p class='ajaxloadingdata'>Error Catching Data</p>");
+                $("#catching_error").html(XMLHttpRequest.responseText); 
+                if (XMLHttpRequest.status == 0) {
+                alert(' Check Your Network.');
+                } else if (XMLHttpRequest.status == 404) {
+                alert('Requested URL not found.');
+                } else if (XMLHttpRequest.status == 500) {
+                alert('Internel Server Error.');
+                }  else {
+                alert('Unknow Error.\n' + XMLHttpRequest.responseText);
+                } 
+            }
+        });
+    }
+    function hapuskelasterapi(id){
+        var check = confirm("Anda Yakin Akan Menghapus Data?");
+        if (check == true) {
+            window.location = "#{base_url}/backend/kelasterapi/delete?id="+id;
+        }
+        else {
+            return false;
+        }
+    }
+    function insertnewdata(){
+        $('#modalkelasterapititle').html("Tambah Data Kelas Terapi")
+        $('#modalkelasterapihere').html('Loading Data..')
+        $('#modalkelasterapihere').html(`
+            <form action="#{base_url}/backend/kelasterapi/create" method="POST">
+                <input type="hidden" name="_csrf" value="#{csrfToken}">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Nama Kelas Terapi</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="result[k2]" placeholder="Masukan Nama Kelas Terapi" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Tambah Data">
+                </div>
+            </form>
+        `)
+    }

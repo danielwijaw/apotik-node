@@ -22,7 +22,7 @@ app.use(cookieParser())
 
 // Middleware Database and Verify Login
 app.use(function(req, res, next) {
-  if(!req.originalUrl.includes("/apotek") && !req.originalUrl.includes("/gudang")){
+  if(req.originalUrl.includes("/login") && !req.originalUrl.includes("/gudang") && !req.originalUrl.includes("/jenisbarang") && !req.originalUrl.includes("/kelasterapi")){
     req.con = con
     next()
   }else{

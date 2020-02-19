@@ -24,7 +24,7 @@ module.exports = {
             tm_data 
         WHERE 
             deleted_by = '0' and
-            JSON_EXTRACT(tm_data.child_value, \"$.k0\") = 'master_gudang'
+            JSON_EXTRACT(tm_data.child_value, \"$.k0\") = 'master_jenisbarang'
             `+search+`
         `, callback)
     },
@@ -45,7 +45,7 @@ module.exports = {
             tm_data
         WHERE
             deleted_by = '0' and
-            JSON_EXTRACT(tm_data.child_value, \"$.k0\") = 'master_gudang'
+            JSON_EXTRACT(tm_data.child_value, \"$.k0\") = 'master_jenisbarang'
             `+search+`
         ORDER BY text
         LIMIT `+data.length+`
