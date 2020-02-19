@@ -31,4 +31,14 @@ module.exports = {
     kelasterapidashboard: function(req, res) {
         res.render("kelasterapi/dashboard", { base_url: host, csrfToken: req.csrfToken() })
     },
+
+    // Jenis Racikan
+    jenisracikanindex: function(req, res) {
+        site = host+"/jenisracikan/dashboard"
+        res.render("apotek/main", { title: 'Master Data Jenis Racikan', url: site, base_url: host})
+    },
+
+    jenisracikandashboard: function(req, res) {
+        res.render("jenisracikan/dashboard", { base_url: host, csrfToken: req.csrfToken() })
+    },
 }

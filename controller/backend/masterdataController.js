@@ -1,6 +1,7 @@
 const Gudangmodel = require("../../model/Gudang")
 const Jenisbarangmodel = require("../../model/Jenisbarang")
 const Kelasterapimodel = require("../../model/Kelasterapi")
+const Jenisracikanmodel = require("../../model/Jenisracikan")
 const EncryptionLib = require("../../library/encryption")
 const async = require('async');
 
@@ -365,5 +366,125 @@ module.exports = {
             res.redirect("/kelasterapi")
             return false;
         })
-    }
+    },
+
+    // Jenis Racikan
+    jenisracikancreate: function(req, res) {
+        // Attribute Insert
+        req.body.result.k0 = "master_jenisracikan"
+        req.body.result.k1 = req.body.result.k2.toLowerCase()
+        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Insert
+        Jenisracikanmodel.insert(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/jenisracikan')
+                return false
+                res.send(req.body)
+            }
+        })
+    },
+    
+    jenisracikandata: function(req, res){
+        async.parallel({
+            count: cb => Jenisracikanmodel.countdata(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya[0].recordsTotal);
+                    }
+                    
+                }
+            ),
+            data: cb => Jenisracikanmodel.getfull(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya);
+                    }
+                    
+                }
+            )
+        },(err, response) => {
+            var catchdata = []
+            if(err){
+                res.send(err)
+                return false
+            }
+            var num = 0;
+            response.data.forEach(element => {
+                var numplus = num++
+                catchdata[numplus] = {
+                    '0': response.data[numplus].text,
+                    '1': `
+                        <button data-toggle="modal" data-target="#modaljenisracikan" onclick="editjenisracikan('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                        <button onclick="hapusjenisracikan('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                }
+            })
+            data = {
+                draw: req.query.draw,
+                status: true,
+                recordsTotal: response.count,
+                recordsFiltered: response.count,
+                data: catchdata
+            }
+            res.send(data)
+        })
+    },
+
+    jenisracikanupdate: function(req, res) {
+        req.body.isid = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute Insert
+        req.body.result.k0 = "master_jenisracikan"
+        req.body.result.k1 = req.body.result.k2.toLowerCase()
+        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Update
+        Jenisracikanmodel.update(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/jenisracikan')
+                return false
+            }
+        })
+    },
+
+    jenisracikanview: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Get ID
+        Jenisracikanmodel.view(req.con, req.query.id, function(err, rows) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.send(rows[0])
+                return false
+            }
+        })
+    },
+
+    jenisracikandelete: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.query.id_update = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Get ID
+        Jenisracikanmodel.destroy(req.con, req.query, function(err) {
+            res.redirect("/jenisracikan")
+            return false;
+        })
+    },
 }

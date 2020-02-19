@@ -33,4 +33,11 @@ router.get("/kelasterapi/data", masterdataControllerBackend.kelasterapidata)
 router.get("/kelasterapi/view", masterdataControllerBackend.kelasterapiview)
 router.get("/kelasterapi/delete", masterdataControllerBackend.kelasterapidelete)
 
+// Jenis Racikan
+router.post("/jenisracikan/create", csrfProtection, masterdataControllerBackend.jenisracikancreate)
+router.post("/jenisracikan/update", csrfProtection, masterdataControllerBackend.jenisracikanupdate)
+router.get("/jenisracikan/data", masterdataControllerBackend.jenisracikandata)
+router.get("/jenisracikan/view", masterdataControllerBackend.jenisracikanview)
+router.get("/jenisracikan/delete", masterdataControllerBackend.jenisracikandelete)
+
 module.exports = router
