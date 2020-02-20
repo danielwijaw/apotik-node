@@ -27,9 +27,8 @@ li(class='nav-item')
     div(id='masterCollapseBarang' class='collapse animated--fade-in' aria-labelledby='headingTwo' data-parent='#accordionSidebar')
         div(class='bg-white py-2 collapse-inner rounded')
             h6(class='collapse-header') Master Barang
-            a(class='collapse-item' href=`${base_url}/apotek`) Alat Kesehatan
-            a(class='collapse-item' href=`${base_url}/apotek`) BHP
-            a(class='collapse-item' href=`${base_url}/apotek`) Obat
+            for row, index in data
+                a(class='collapse-item' href=`${base_url}/barang/${row[1]}`) #{row[0]}
     
     a(class='nav-link collapsed' href='javascript:void(0)' data-toggle='collapse' data-target='#masterCollapseManSto' aria-expanded='true' aria-controls='collapseTwo')
         i(class='fas fa-fw fa-folder-open')
@@ -37,6 +36,7 @@ li(class='nav-item')
     div(id='masterCollapseManSto' class='collapse animated--fade-in' aria-labelledby='headingTwo' data-parent='#accordionSidebar')
         div(class='bg-white py-2 collapse-inner rounded')
             h6(class='collapse-header') Management Stock
+            a(class='collapse-item' href=`${base_url}/apotek`) Stock Awal
             a(class='collapse-item' href=`${base_url}/apotek`) Stock Opname
             a(class='collapse-item' href=`${base_url}/apotek`) Stock Barang
             a(class='collapse-item' href=`${base_url}/apotek`) Stock Batch
@@ -67,5 +67,5 @@ li(class='nav-item')
     div(id='masterCollapseSet' class='collapse animated--fade-in' aria-labelledby='headingTwo' data-parent='#accordionSidebar')
         div(class='bg-white py-2 collapse-inner rounded')
             h6(class='collapse-header') Pengaturan
-            a(class='collapse-item' href=`${base_url}/apotek`) Embalase
-            a(class='collapse-item' href=`${base_url}/apotek`) Harga Jual
+            a(class='collapse-item' href=`${base_url}/setting/embalase`) Embalase
+            a(class='collapse-item' href=`${base_url}/setting/hargajual`) Harga Jual

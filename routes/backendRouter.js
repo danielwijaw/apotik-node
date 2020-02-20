@@ -7,10 +7,15 @@ var csrfProtection = csrf({ cookie: true })
 // Define Controllers Backend
 const loginControllerBackend = require("../controller/backend/loginController")
 const masterdataControllerBackend = require("../controller/backend/masterdataController")
+const settingControllerBackend = require("../controller/backend/settingController")
 
 // Backend
 router.post("/login", csrfProtection, loginControllerBackend.login)
 router.get("/logout", loginControllerBackend.logout)
+
+// Setting
+router.get("/setting", settingControllerBackend.index)
+router.put("/setting", csrfProtection, settingControllerBackend.update)
 
 // Gudang
 router.post("/gudang/create", csrfProtection, masterdataControllerBackend.gudangcreate)

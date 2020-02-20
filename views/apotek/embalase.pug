@@ -1,0 +1,43 @@
+div(class='container-fluid')
+    div(class='row')
+        div(class='col-lg-12')
+            div(class='card shadow mb-4')
+                div(class='card-header py-3')
+                    h6(class='m-0 font-weight-bold text-primary') Pengaturan Embalase
+                div(class='card-body')
+                    div(class='form-group')
+                        form(action=`${base_url}/backend/setting?_method=PUT` method="post")
+                            input(type="hidden" name="_csrf" value=`${csrfToken}`)
+                            input(type="hidden" name="result[k0]" value="setting")
+                            div(class='col-md-6')
+                                div(class='row' style="margin-bottom: 2vh")
+                                    div(class='col-md-6')
+                                        label Aktifkan Embalase
+                                    div(class='col-md-6')
+                                        select(name='result[k1]' class='form-control')
+                                            option(value=`${data.k1}`) #{data.k1}
+                                            option(value='Ya') Ya
+                                            option(value='Tidak') Tidak
+                                div(class='row' style="margin-bottom: 2vh")
+                                    div(class='col-md-6')
+                                        label Pengaturan Embalase per
+                                    div(class='col-md-6')
+                                        select(name='result[k2]' class='form-control')
+                                            option(value=`${data.k2}`) #{data.k2}
+                                            option(value='Resep') Resep
+                                            option(value='Transaksi') Transaksi
+                                div(class='row' style="margin-bottom: 2vh")
+                                    div(class='col-md-6')
+                                        label Embalase Satuan (Rp.)
+                                    div(class='col-md-6')
+                                        input(type="text" value=`${data.k3}` name='result[k3]' class='form-control')
+                                div(class='row' style="margin-bottom: 2vh")
+                                    div(class='col-md-6')
+                                        label Embalase Racikan (Rp.)
+                                    div(class='col-md-6')
+                                        input(type="text" value=`${data.k4}` name='result[k4]' class='form-control')
+                                        input(type="hidden" name="result[k5]" value=`${data.k5}`)
+                                        input(type="hidden" name="result[k6]" value=`${data.k6}`)
+                                        input(type="hidden" name="result[k7]" value=`${data.k7}`)
+                                div(class='row' style="margin-bottom: 2vh")
+                                    input(type="submit" value="Perbarui" class="btn btn-primary btn-sm")

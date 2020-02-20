@@ -50,4 +50,16 @@ router.get("/pabrik/dashboard", csrfProtection, masterdataControllerFrontend.pab
 router.get("/supplier", masterdataControllerFrontend.supplierindex)
 router.get("/supplier/dashboard", csrfProtection, masterdataControllerFrontend.supplierdashboard)
 
+// Setting Embalase
+router.get("/setting/embalase", apotekControllerFrontend.settingembalase)
+router.get("/setting/embalasedashboard", csrfProtection, apotekControllerFrontend.embalasedashboard)
+
+// Setting Embalase
+router.get("/setting/hargajual", apotekControllerFrontend.settingharga)
+router.get("/setting/hargajualdashboard", csrfProtection, apotekControllerFrontend.hargajualdashboard)
+
+router.get("/barang/:slug", function(req, res){
+    res.send(req.params)
+})
+
 module.exports = router
