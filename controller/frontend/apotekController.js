@@ -29,7 +29,8 @@ module.exports = {
                 response.data.forEach(element => {
                     var numplus = num++
                     response.data[numplus][1] = response.data[numplus][0].toLowerCase()
-                    response.data[numplus][1] = response.data[numplus][1].replace(" ", "_")
+                    response.data[numplus][1] = response.data[numplus][1].replace(new RegExp(" ", 'g'), "_")
+                    // replace(new RegExp(" ", 'g'), "_") || replace(" ", "_")
                 })
                 yes.render("apotek/sidebar", { data: response.data, base_url: host });
             });

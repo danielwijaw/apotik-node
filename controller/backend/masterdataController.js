@@ -14,7 +14,7 @@ module.exports = {
         // Attribute Insert
         req.body.result.k0 = "master_gudang"
         req.body.result.k1 = req.body.result.k2.toLowerCase()
-        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
         // Attribute ID
         req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
         req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
@@ -87,7 +87,7 @@ module.exports = {
         // Attribute Insert
         req.body.result.k0 = "master_gudang"
         req.body.result.k1 = req.body.result.k2.toLowerCase()
-        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
         // Attribute ID
         req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
         req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
@@ -135,7 +135,7 @@ module.exports = {
         // Attribute Insert
         req.body.result.k0 = "master_jenisbarang"
         req.body.result.k1 = req.body.result.k2.toLowerCase()
-        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
         // Attribute ID
         req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
         req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
@@ -153,6 +153,9 @@ module.exports = {
     },
     
     jenisbarangdata: function(req, res){
+        if(typeof req.query.q !='undefined'){
+            req.query.search.value = req.query.q
+        }
         async.parallel({
             count: cb => Jenisbarangmodel.countdata(req.con, req.query,
                 function(err, results) { 
@@ -183,21 +186,32 @@ module.exports = {
                 return false
             }
             var num = 0;
-            response.data.forEach(element => {
-                var numplus = num++
-                catchdata[numplus] = {
-                    '0': response.data[numplus].text,
-                    '1': `
-                        <button data-toggle="modal" data-target="#modaljenisbarang" onclick="editjenisbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
-                        <button onclick="hapusjenisbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+            if(typeof req.query.select2!='undefined'){
+                response.data.forEach(element => {
+                    var numplus = num++
+                    response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
+                })
+                data = {
+                    results: response.data,
+                    pagination: false
                 }
-            })
-            data = {
-                draw: req.query.draw,
-                status: true,
-                recordsTotal: response.count,
-                recordsFiltered: response.count,
-                data: catchdata
+            }else{
+                response.data.forEach(element => {
+                    var numplus = num++
+                    catchdata[numplus] = {
+                        '0': response.data[numplus].text,
+                        '1': `
+                            <button data-toggle="modal" data-target="#modaljenisbarang" onclick="editjenisbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                            <button onclick="hapusjenisbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                    }
+                })
+                data = {
+                    draw: req.query.draw,
+                    status: true,
+                    recordsTotal: response.count,
+                    recordsFiltered: response.count,
+                    data: catchdata
+                }
             }
             res.send(data)
         })
@@ -208,7 +222,7 @@ module.exports = {
         // Attribute Insert
         req.body.result.k0 = "master_jenisbarang"
         req.body.result.k1 = req.body.result.k2.toLowerCase()
-        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
         // Attribute ID
         req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
         req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
@@ -256,7 +270,7 @@ module.exports = {
         // Attribute Insert
         req.body.result.k0 = "master_kelasterapi"
         req.body.result.k1 = req.body.result.k2.toLowerCase()
-        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
         // Attribute ID
         req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
         req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
@@ -274,6 +288,9 @@ module.exports = {
     },
     
     kelasterapidata: function(req, res){
+        if(typeof req.query.q !='undefined'){
+            req.query.search.value = req.query.q
+        }
         async.parallel({
             count: cb => Kelasterapimodel.countdata(req.con, req.query,
                 function(err, results) { 
@@ -304,21 +321,32 @@ module.exports = {
                 return false
             }
             var num = 0;
-            response.data.forEach(element => {
-                var numplus = num++
-                catchdata[numplus] = {
-                    '0': response.data[numplus].text,
-                    '1': `
-                        <button data-toggle="modal" data-target="#modalkelasterapi" onclick="editkelasterapi('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
-                        <button onclick="hapuskelasterapi('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+            if(typeof req.query.select2!='undefined'){
+                response.data.forEach(element => {
+                    var numplus = num++
+                    response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
+                })
+                data = {
+                    results: response.data,
+                    pagination: false
                 }
-            })
-            data = {
-                draw: req.query.draw,
-                status: true,
-                recordsTotal: response.count,
-                recordsFiltered: response.count,
-                data: catchdata
+            }else{
+                response.data.forEach(element => {
+                    var numplus = num++
+                    catchdata[numplus] = {
+                        '0': response.data[numplus].text,
+                        '1': `
+                            <button data-toggle="modal" data-target="#modalkelasterapi" onclick="editkelasterapi('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                            <button onclick="hapuskelasterapi('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                    }
+                })
+                data = {
+                    draw: req.query.draw,
+                    status: true,
+                    recordsTotal: response.count,
+                    recordsFiltered: response.count,
+                    data: catchdata
+                }      
             }
             res.send(data)
         })
@@ -329,7 +357,7 @@ module.exports = {
         // Attribute Insert
         req.body.result.k0 = "master_kelasterapi"
         req.body.result.k1 = req.body.result.k2.toLowerCase()
-        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
         // Attribute ID
         req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
         req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
@@ -376,7 +404,7 @@ module.exports = {
         // Attribute Insert
         req.body.result.k0 = "master_jenisracikan"
         req.body.result.k1 = req.body.result.k2.toLowerCase()
-        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
         // Attribute ID
         req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
         req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
@@ -449,7 +477,7 @@ module.exports = {
         // Attribute Insert
         req.body.result.k0 = "master_jenisracikan"
         req.body.result.k1 = req.body.result.k2.toLowerCase()
-        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
         // Attribute ID
         req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
         req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
@@ -496,7 +524,7 @@ module.exports = {
         // Attribute Insert
         req.body.result.k0 = "master_satuanbarang"
         req.body.result.k1 = req.body.result.k2.toLowerCase()
-        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
         // Attribute ID
         req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
         req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
@@ -514,6 +542,9 @@ module.exports = {
     },
     
     satuanbarangdata: function(req, res){
+        if(typeof req.query.q !='undefined'){
+            req.query.search.value = req.query.q
+        }
         async.parallel({
             count: cb => Satuanbarangmodel.countdata(req.con, req.query,
                 function(err, results) { 
@@ -544,21 +575,32 @@ module.exports = {
                 return false
             }
             var num = 0;
-            response.data.forEach(element => {
-                var numplus = num++
-                catchdata[numplus] = {
-                    '0': response.data[numplus].text,
-                    '1': `
-                        <button data-toggle="modal" data-target="#modalsatuanbarang" onclick="editsatuanbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
-                        <button onclick="hapussatuanbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+            if(typeof req.query.select2!='undefined'){
+                response.data.forEach(element => {
+                    var numplus = num++
+                    response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
+                })
+                data = {
+                    results: response.data,
+                    pagination: false
                 }
-            })
-            data = {
-                draw: req.query.draw,
-                status: true,
-                recordsTotal: response.count,
-                recordsFiltered: response.count,
-                data: catchdata
+            }else{
+                response.data.forEach(element => {
+                    var numplus = num++
+                    catchdata[numplus] = {
+                        '0': response.data[numplus].text,
+                        '1': `
+                            <button data-toggle="modal" data-target="#modalsatuanbarang" onclick="editsatuanbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                            <button onclick="hapussatuanbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                    }
+                })
+                data = {
+                    draw: req.query.draw,
+                    status: true,
+                    recordsTotal: response.count,
+                    recordsFiltered: response.count,
+                    data: catchdata
+                }
             }
             res.send(data)
         })
@@ -569,7 +611,7 @@ module.exports = {
         // Attribute Insert
         req.body.result.k0 = "master_satuanbarang"
         req.body.result.k1 = req.body.result.k2.toLowerCase()
-        req.body.result.k1 = req.body.result.k1.replace(" ", "_")
+        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
         // Attribute ID
         req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
         req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)

@@ -8,24 +8,25 @@ div(class='col-xl-12 col-lg-12')
             button(type="button" onclick="insertnewdata()" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalpabrik") Tambah Data
             br
             br
-            table(id="datatables_master_data_pabrik" style="width:100%")
-                thead
-                    tr
-                        th Kode Pabrik
-                        th Nama Pabrik
-                        th Alamat Pabrik
-                        th Kota Pabrik
-                        th Telepon Pabrik
-                        th &nbsp;
-                tbody
-                tfoot  
-                    tr
-                        th Kode Pabrik
-                        th Nama Pabrik
-                        th Alamat Pabrik
-                        th Kota Pabrik
-                        th Telepon Pabrik
-                        th &nbsp;
+            div(class="table-responsive")
+                table(id="datatables_master_data_pabrik" style="width:100%")
+                    thead
+                        tr
+                            th Kode Pabrik
+                            th Nama Pabrik
+                            th Alamat Pabrik
+                            th Kota Pabrik
+                            th Telepon Pabrik
+                            th &nbsp;
+                    tbody
+                    tfoot  
+                        tr
+                            th Kode Pabrik
+                            th Nama Pabrik
+                            th Alamat Pabrik
+                            th Kota Pabrik
+                            th Telepon Pabrik
+                            th &nbsp;
 
 //- Modal Show
 div(id="modalpabrik" class="modal fade" role="dialog")

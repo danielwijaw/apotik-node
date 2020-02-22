@@ -1,0 +1,606 @@
+link(rel='stylesheet', href='/css/datatables.min.css')
+script(src='/js/datatables.min.js')
+link(rel='stylesheet', href='/css/select2.min.css')
+script(src='/js/select2.full.min.js')
+div(class='col-xl-12 col-lg-12')
+    div(class='card shadow mb-4')
+        div(class='card-header py-3 d-flex flex-row align-items-center justify-content-between')
+            h6(class='m-0 font-weight-bold text-primary') Master Barang #{title}
+        div(class='card-body')
+            button(type="button" onclick="insertnewdata()" class="btn btn-primary btn-sm" data-toggle="modal" data-target=`#modal${slug}`) Tambah Data
+            br
+            br
+            div(class="table-responsive")
+                table(id=`datatables_master_barang_${slug}` style="width:100%")
+                    thead
+                        tr
+                            th Jenis 
+                            th Kode 
+                            th Nama 
+                            th Sat Beli 
+                            th Sat Jual 
+                            th Konversi 
+                            th Golongan 
+                            th Kelas Terapi 
+                            th Formularium 
+                            th Eticket
+                            th HNA
+                            th Harga Jual
+                            th Sediaan    
+                            th &nbsp;
+                    tbody
+                    tfoot  
+                        tr
+                            th Jenis 
+                            th Kode 
+                            th Nama 
+                            th Sat Beli 
+                            th Sat Jual 
+                            th Konversi 
+                            th Golongan 
+                            th Kelas Terapi 
+                            th Formularium 
+                            th Eticket
+                            th HNA
+                            th Harga Jual
+                            th Sediaan  
+                            th &nbsp;
+
+//- Modal Show
+div(id=`modal${slug}` class="modal fade" role="dialog")
+    div(class="modal-dialog modal-lg")
+        div(class="modal-content")
+            div(class="modal-header")
+                h4(class="modal-title" id=`modal${slug}title`)
+                button(type="button" class="close" data-dismiss="modal") &times;
+            div(class="modal-body")
+                div(id=`modal${slug}here` class="col-md-12")
+
+script(type='text/javascript').
+    $(document).ready(function() {
+        $("#datatables_master_barang_#{slug}").DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax"      : "#{host}/backend/barang/#{slug}/data",
+            "columnDefs": [{
+              "targets": 13,
+              "orderable": false,
+              "searchable": false
+                
+            }],
+        });
+    } );
+    function editbarang(id){
+        $('#modal#{slug}title').html("Edit Barang #{title}")
+        $('#modal#{slug}here').html('Loading Data..')
+        $.ajax({
+            url: "#{base_url}/backend/barang/#{slug}/view?id="+id,
+            contentType: false,
+            cache: true,
+            processData: false,
+            success: function(data) {
+                $('#modal#{slug}here').html(`
+                    <form action="#{base_url}/backend/barang/#{slug}/update?id=`+id+`" method="POST">
+                        <input type="hidden" name="_csrf" value="#{csrfToken}">
+                        <input type="hidden" name="result[k0]" value="`+data.k0+`">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Formularium</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control k1_select2" name="result[k1]" required>
+                                        <option value="`+data.k1+`" selected>`+data.k1+`</option>
+                                        <option value="Ya">Ya</option>
+                                        <option value="Tidak">Tidak</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Jenis</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="hidden" name="result[k2_text]" id="k2_text" value="`+data.k2_text+`" required>
+                                    <select class="form-control k2_select2" name="result[k2]" required>
+                                        <option value="`+data.k2+`" selected>`+data.k2_text+`</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Kelas Terapi</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="hidden" name="result[k3_text]" id="k3_text" value="`+data.k3_text+`" required>
+                                    <select class="form-control k3_select2" name="result[k3]" required>
+                                        <option value="`+data.k3+`" selected>`+data.k3_text+`</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Golongan</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control k4_select2" name="result[k4]" required>
+                                        <option value="`+data.k4+`" selected>`+data.k4+`</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                        <option value="D">D</option>
+                                        <option value="X">X</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Kode</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="result[k5]" value="`+data.k5+`" readonly required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Nama</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="result[k6]" value="`+data.k6+`" placeholder="Silahkan diisi..." required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Komposisi</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="result[k7]" value="`+data.k7+`" placeholder="Silahkan diisi..." required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Sediaan</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="result[k8]" value="`+data.k8+`" placeholder="Silahkan diisi..." required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Satuan Beli</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="hidden" name="result[k9_text]" value="`+data.k9_text+`" id="k9_text" required>
+                                    <select class="form-control k9_select2" name="result[k9]" required>
+                                        <option selected value="`+data.k9+`">`+data.k9_text+`</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Satuan Jual</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="hidden" name="result[k10_text]" value="`+data.k10_text+`" id="k10_text" required>
+                                    <select class="form-control k10_select2" name="result[k10]" required>
+                                        <option value="`+data.k10+`" selected>`+data.k10_text+`</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Konversi</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="k11" class="form-control" name="result[k11]" value="`+data.k11+`" placeholder="Silahkan diisi..." required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Konversi</label>
+                                </div>
+                                <div class="col-md-9">
+                                    01 <label id="satuanbeli" style="font-weight: bold">`+data.k9_text+`</label> = <label id="valuenya">`+data.k11+`</label> <label style="font-weight: bold" id="satuanjual">`+data.k10_text+`</label>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>HNA (Rp.)</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" onkeyup="generateprice()" id="k12" class="form-control" name="result[k12]" value="`+data.k12+`" placeholder="Silahkan diisi..." required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Diskon (%)</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" onkeyup="generateprice()" id="k13" class="form-control" name="result[k13]" value="`+data.k13+`" placeholder="Silahkan diisi..." required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>PPN (%)</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" onkeyup="generateprice()" class="form-control" id="k14" name="result[k14]" value="`+data.k14+`" placeholder="Silahkan diisi...">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Persentase Penjualan (%)</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" onkeyup="generateprice()" class="form-control" id="k15" name="result[k15]" value="`+data.k15+`" placeholder="Silahkan diisi...">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Harga Jual (Rp.)</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="k16" class="form-control" name="result[k16]" value="`+data.k16+`" placeholder="Silahkan diisi..." required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>E Ticket</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" name="result[k17]" placeholder="Silahkan diisi..." required>`+data.k17+`</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Perbarui Data">
+                        </div>
+                    </form>
+                `)
+                $(".k1_select2").select2({
+                    placeholder: 'Pilih Validasi Formularium',
+                    allowClear: true,
+                    width: '100%'
+                });
+                $(".k2_select2").select2({
+                    placeholder: 'Silahkan pilih...',
+                    allowClear: true,
+                    width: '100%',
+                    ajax: {
+                        url: "#{host}/backend/jenisbarang/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                        dataType: 'json',
+                    }
+                });
+                $('.k2_select2').on('select2:select', function (e) {
+                    $("#k2_text").val(e.params.data.text);
+                });
+                $(".k3_select2").select2({
+                    placeholder: 'Silahkan pilih...',
+                    allowClear: true,
+                    width: '100%',
+                    ajax: {
+                        url: "#{host}/backend/kelasterapi/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                        dataType: 'json',
+                    }
+                });
+                $('.k3_select2').on('select2:select', function (e) {
+                    $("#k3_text").val(e.params.data.text);
+                });
+                $(".k4_select2").select2({
+                    placeholder: 'Silahkan pilih...',
+                    allowClear: true,
+                    width: '100%'
+                });
+                $(".k9_select2").select2({
+                    placeholder: 'Silahkan pilih...',
+                    allowClear: true,
+                    width: '100%',
+                    ajax: {
+                        url: "#{host}/backend/satuanbarang/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                        dataType: 'json',
+                    }
+                });
+                $('.k9_select2').on('select2:select', function (e) {
+                    $("#satuanbeli").html(e.params.data.text);
+                    $("#k9_text").val(e.params.data.text);
+                });
+                $(".k10_select2").select2({
+                    placeholder: 'Silahkan pilih...',
+                    allowClear: true,
+                    width: '100%',
+                    ajax: {
+                        url: "#{host}/backend/satuanbarang/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                        dataType: 'json',
+                    }
+                });
+                $('.k10_select2').on('select2:select', function (e) {
+                    $("#satuanjual").html(e.params.data.text);
+                    $("#k10_text").val(e.params.data.text);
+                });
+                $('#k11').keyup(function () {
+                    $("#valuenya").html(this.value);
+                });
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#modal#{slug}here').html("<p class='ajaxloadingdata'>Error Catching Data</p>");
+                $("#catching_error").html(XMLHttpRequest.responseText); 
+                if (XMLHttpRequest.status == 0) {
+                alert(' Check Your Network.');
+                } else if (XMLHttpRequest.status == 404) {
+                alert('Requested URL not found.');
+                } else if (XMLHttpRequest.status == 500) {
+                alert('Internel Server Error.');
+                }  else {
+                alert('Unknow Error.\n' + XMLHttpRequest.responseText);
+                } 
+            }
+        });
+    }
+    function hapusbarang(id){
+        var check = confirm("Anda Yakin Akan Menghapus Data?");
+        if (check == true) {
+            window.location = "#{base_url}/backend/barang/#{slug}/delete?id="+id;
+        }
+        else {
+            return false;
+        }
+    }
+    function generateprice(){
+        var hnaval = $("#k12").val();
+        var disval = $("#k13").val();
+        var ppnval = $("#k14").val();
+        var pnpval = $("#k15").val();
+        var pricen = $("#k16");
+        var pricecount = (parseInt(hnaval) + parseInt( (hnaval/100) * pnpval ));
+        var ppncount = (parseInt(pricecount) + parseInt( (pricecount/100) * ppnval ));
+        pricen.val(ppncount);
+    }
+    var dataif = "Tidak";
+    if(dataif != "#{data.k5}"){
+        var persentase = #{data.k7};
+        var ppnval = #{data.k6};
+    }else{
+        var persentase = 0;
+        var ppnval = 0;
+    }
+    function insertnewdata(){
+        $('#modal#{slug}title').html("Tambah Barang #{title}")
+        $('#modal#{slug}here').html('Loading Data..')
+        $('#modal#{slug}here').html(`
+            <form action="#{base_url}/backend/barang/#{slug}/create" method="POST">
+                <input type="hidden" name="_csrf" value="#{csrfToken}">
+                <input type="hidden" name="result[k0]" value="barang_#{slug}">
+                <div class="form-group">
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Formularium</label>
+                        </div>
+                        <div class="col-md-9">
+                            <select class="form-control k1_select2" name="result[k1]" required>
+                                <option value="" disabled  selected>Pilih Validasi Formularium</option>
+                                <option value="Ya">Ya</option>
+                                <option value="Tidak">Tidak</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Jenis</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="hidden" name="result[k2_text]" id="k2_text" required>
+                            <select class="form-control k2_select2" name="result[k2]" required>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Kelas Terapi</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="hidden" name="result[k3_text]" id="k3_text" required>
+                            <select class="form-control k3_select2" name="result[k3]" required>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Golongan</label>
+                        </div>
+                        <div class="col-md-9">
+                            <select class="form-control k4_select2" name="result[k4]" required>
+                                <option value="" disabled  selected>Silahkan Pilih...</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="X">X</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Kode</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="result[k5]" value="Auto Generate" readonly required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Nama</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="result[k6]" placeholder="Silahkan diisi..." required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Komposisi</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="result[k7]" placeholder="Silahkan diisi..." required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Sediaan</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" name="result[k8]" placeholder="Silahkan diisi..." required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Satuan Beli</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="hidden" name="result[k9_text]" id="k9_text" required>
+                            <select class="form-control k9_select2" name="result[k9]" required>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Satuan Jual</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="hidden" name="result[k10_text]" id="k10_text" required>
+                            <select class="form-control k10_select2" name="result[k10]" required>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Konversi</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" id="k11" class="form-control" name="result[k11]" placeholder="Silahkan diisi..." required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Konversi</label>
+                        </div>
+                        <div class="col-md-9">
+                            01 <label id="satuanbeli" style="font-weight: bold">satuan beli</label> = <label id="valuenya">....</label> <label style="font-weight: bold" id="satuanjual">satuan jual</label>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>HNA (Rp.)</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" onkeyup="generateprice()" id="k12" class="form-control" name="result[k12]" placeholder="Silahkan diisi..." required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Diskon (%)</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" onkeyup="generateprice()" id="k13" class="form-control" name="result[k13]" placeholder="Silahkan diisi..." required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>PPN (%)</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" onkeyup="generateprice()" class="form-control" id="k14" name="result[k14]" placeholder="Silahkan diisi..." value="`+ppnval+`">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Persentase Penjualan (%)</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" onkeyup="generateprice()" class="form-control" id="k15" name="result[k15]" placeholder="Silahkan diisi..." value="`+persentase+`">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Harga Jual (Rp.)</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" id="k16" class="form-control" name="result[k16]" placeholder="Silahkan diisi..." required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>E Ticket</label>
+                        </div>
+                        <div class="col-md-9">
+                            <textarea class="form-control" name="result[k17]" placeholder="Silahkan diisi..." required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Tambah Data">
+                </div>
+            </form>
+        `)
+        $(".k1_select2").select2({
+            placeholder: 'Pilih Validasi Formularium',
+            allowClear: true,
+            width: '100%'
+        });
+        $(".k2_select2").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "#{host}/backend/jenisbarang/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                dataType: 'json',
+            }
+        });
+        $('.k2_select2').on('select2:select', function (e) {
+            $("#k2_text").val(e.params.data.text);
+        });
+        $(".k3_select2").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "#{host}/backend/kelasterapi/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                dataType: 'json',
+            }
+        });
+        $('.k3_select2').on('select2:select', function (e) {
+            $("#k3_text").val(e.params.data.text);
+        });
+        $(".k4_select2").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%'
+        });
+        $(".k9_select2").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "#{host}/backend/satuanbarang/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                dataType: 'json',
+            }
+        });
+        $('.k9_select2').on('select2:select', function (e) {
+            $("#satuanbeli").html(e.params.data.text);
+            $("#k9_text").val(e.params.data.text);
+        });
+        $(".k10_select2").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "#{host}/backend/satuanbarang/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                dataType: 'json',
+            }
+        });
+        $('.k10_select2').on('select2:select', function (e) {
+            $("#satuanjual").html(e.params.data.text);
+            $("#k10_text").val(e.params.data.text);
+        });
+        $('#k11').keyup(function () {
+            $("#valuenya").html(this.value);
+        });
+    }

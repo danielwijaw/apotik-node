@@ -9,6 +9,7 @@ var csrfProtection = csrf({ cookie: true })
 const loginControllerFrontend = require("../controller/frontend/loginController")
 const apotekControllerFrontend = require("../controller/frontend/apotekController")
 const masterdataControllerFrontend = require("../controller/frontend/masterdataController")
+const masterbarangControllerFrontend = require("../controller/frontend/masterbarangController")
 
 // Login
 router.get("/", loginControllerFrontend.main)
@@ -58,8 +59,8 @@ router.get("/setting/embalasedashboard", csrfProtection, apotekControllerFronten
 router.get("/setting/hargajual", apotekControllerFrontend.settingharga)
 router.get("/setting/hargajualdashboard", csrfProtection, apotekControllerFrontend.hargajualdashboard)
 
-router.get("/barang/:slug", function(req, res){
-    res.send(req.params)
-})
+// Master Barang
+router.get("/barang/:slug", masterbarangControllerFrontend.barang)
+router.get("/barangview/:slug", csrfProtection, masterbarangControllerFrontend.barangview)
 
 module.exports = router

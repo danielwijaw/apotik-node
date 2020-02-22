@@ -8,6 +8,7 @@ var csrfProtection = csrf({ cookie: true })
 const loginControllerBackend = require("../controller/backend/loginController")
 const masterdataControllerBackend = require("../controller/backend/masterdataController")
 const settingControllerBackend = require("../controller/backend/settingController")
+const masterbarangControllerBackend = require("../controller/backend/masterbarangController")
 
 // Backend
 router.post("/login", csrfProtection, loginControllerBackend.login)
@@ -65,5 +66,12 @@ router.post("/supplier/update", csrfProtection, masterdataControllerBackend.supp
 router.get("/supplier/data", masterdataControllerBackend.supplierdata)
 router.get("/supplier/view", masterdataControllerBackend.supplierview)
 router.get("/supplier/delete", masterdataControllerBackend.supplierdelete)
+
+// Master Barang
+router.post("/barang/:slug/create", csrfProtection, masterbarangControllerBackend.create)
+router.post("/barang/:slug/update", csrfProtection, masterbarangControllerBackend.update)
+router.get("/barang/:slug/data", masterbarangControllerBackend.data)
+router.get("/barang/:slug/view", masterbarangControllerBackend.view)
+router.get("/barang/:slug/delete", masterbarangControllerBackend.delete)
 
 module.exports = router

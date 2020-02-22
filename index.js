@@ -22,7 +22,10 @@ app.use(cookieParser())
 
 // Middleware Database and Verify Login
 app.use(function(req, res, next) {
-  if(!req.originalUrl.includes("/login") && !req.originalUrl.includes("?allow=true")){
+  res.set("Cache-Control: no-cache, no-store, must-revalidate")
+  res.set("Pragma: no-cache")
+  res.set("Expires: 0 ")
+  if(!req.originalUrl.includes("/login") && !req.originalUrl.includes("allow=true")){
     if(typeof req.cookies['cookielogin'] == 'undefined'){
       res.redirect('/login')
       return false
