@@ -34,7 +34,12 @@ script(type='text/javascript').
         $('#datatables_master_data_kelasterapi').DataTable({
             "processing": true,
             "serverSide": true,
-            "ajax"      : "#{host}/backend/kelasterapi/data"
+            "ajax"      : "#{host}/backend/kelasterapi/data",
+            "columnDefs": [{
+              "targets": [0,1],
+              "orderable": false,
+              "searchable": false 
+            }]
         });
     } );
     function editkelasterapi(id){

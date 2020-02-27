@@ -71,4 +71,14 @@ module.exports = {
     supplierdashboard: function(req, res) {
         res.render("supplier/dashboard", { base_url: host, csrfToken: req.csrfToken() })
     },
+
+    // Data Interaksi
+    interaksiindex: function(req, res) {
+        site = host+"/interaksi/dashboard"
+        res.render("apotek/main", { title: 'Master Data Interaksi', url: site, base_url: host})
+    },
+
+    interaksidashboard: function(req, res) {
+        res.render("interaksi/dashboard", { base_url: host, csrfToken: req.csrfToken() })
+    },
 }

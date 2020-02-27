@@ -34,7 +34,12 @@ script(type='text/javascript').
         $('#datatables_master_data_jenisbarang').DataTable({
             "processing": true,
             "serverSide": true,
-            "ajax"      : "#{host}/backend/jenisbarang/data"
+            "ajax"      : "#{host}/backend/jenisbarang/data",
+            "columnDefs": [{
+              "targets": [0,1],
+              "orderable": false,
+              "searchable": false 
+            }]
         });
     } );
     function editjenisbarang(id){

@@ -34,7 +34,12 @@ script(type='text/javascript').
         $('#datatables_master_data_gudang').DataTable({
             "processing": true,
             "serverSide": true,
-            "ajax"      : "#{host}/backend/gudang/data"
+            "ajax"      : "#{host}/backend/gudang/data",
+            "columnDefs": [{
+              "targets": [0,1],
+              "orderable": false,
+              "searchable": false 
+            }]
         });
     } );
     function editgudang(id){

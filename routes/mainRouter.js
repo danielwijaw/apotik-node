@@ -47,6 +47,10 @@ router.get("/satuanbarang/dashboard", csrfProtection, masterdataControllerFronte
 router.get("/pabrik", masterdataControllerFrontend.pabrikindex)
 router.get("/pabrik/dashboard", csrfProtection, masterdataControllerFrontend.pabrikdashboard)
 
+// Data Pabrik
+router.get("/interaksi", masterdataControllerFrontend.interaksiindex)
+router.get("/interaksi/dashboard", csrfProtection, masterdataControllerFrontend.interaksidashboard)
+
 // Supplier
 router.get("/supplier", masterdataControllerFrontend.supplierindex)
 router.get("/supplier/dashboard", csrfProtection, masterdataControllerFrontend.supplierdashboard)

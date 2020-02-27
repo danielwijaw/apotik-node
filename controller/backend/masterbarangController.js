@@ -64,6 +64,17 @@ module.exports = {
         })
     },
     data: function(req, res) {
+        if(typeof req.query.q !='undefined'){
+            req.query.search.value = req.query.q
+        }
+        if(typeof req.query.order =='undefined'){
+            req.query.order =  {
+                0 :{
+                    column  : 1,
+                    dir     : "DESC"
+                }
+            }
+        }
         async.parallel({
             count: cb => Barangmodel.countdata(req.con, req.query, req.params.slug,
                 function(err, results) { 
@@ -94,33 +105,47 @@ module.exports = {
                 return false
             }
             var num = 0;
-            response.data.forEach(element => {
-                var numplus = num++
-                catchdata[numplus] = {
-                    '0': response.data[numplus].is0,
-                    '1': response.data[numplus].is1,
-                    '2': response.data[numplus].is2,
-                    '3': response.data[numplus].is3,
-                    '4': response.data[numplus].is4,
-                    '5': response.data[numplus].is5,
-                    '6': response.data[numplus].is6,
-                    '7': response.data[numplus].is7,
-                    '8': response.data[numplus].is8,
-                    '9': response.data[numplus].is9,
-                    '10': response.data[numplus].is10,
-                    '11': response.data[numplus].is11,
-                    '12': response.data[numplus].is12,
-                    '13': `
-                        <button data-toggle="modal" data-target="#modal`+req.params.slug+`" onclick="editbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
-                        <button onclick="hapusbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+            if(typeof req.query.select2!='undefined'){
+                response.data.forEach(element => {
+                    var numplus = num++
+                    response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
+                    response.data[numplus].text = response.data[numplus].is2
+                })
+                data = {
+                    results: response.data,
+                    pagination: {
+                        more: false
+                    }
                 }
-            })
-            data = {
-                draw: req.query.draw,
-                status: true,
-                recordsTotal: response.count,
-                recordsFiltered: response.count,
-                data: catchdata
+            }else{
+                response.data.forEach(element => {
+                    var numplus = num++
+                    catchdata[numplus] = {
+                        '0': response.data[numplus].is0,
+                        '1': response.data[numplus].is1,
+                        '2': response.data[numplus].is2,
+                        '3': response.data[numplus].is3,
+                        '4': response.data[numplus].is4,
+                        '5': response.data[numplus].is5,
+                        '6': response.data[numplus].is6,
+                        '7': response.data[numplus].is7,
+                        '8': response.data[numplus].is8,
+                        '9': response.data[numplus].is9,
+                        '10': response.data[numplus].is10,
+                        '11': response.data[numplus].is11,
+                        '12': response.data[numplus].is12,
+                        '13': `
+                            <button data-toggle="modal" data-target="#modal`+req.params.slug+`" onclick="editbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                            <button onclick="hapusbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                    }
+                })
+                data = {
+                    draw: req.query.draw,
+                    status: true,
+                    recordsTotal: response.count,
+                    recordsFiltered: response.count,
+                    data: catchdata
+                }
             }
             res.send(data)
         })

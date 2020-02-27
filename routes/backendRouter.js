@@ -67,6 +67,13 @@ router.get("/supplier/data", masterdataControllerBackend.supplierdata)
 router.get("/supplier/view", masterdataControllerBackend.supplierview)
 router.get("/supplier/delete", masterdataControllerBackend.supplierdelete)
 
+// Interaksi
+router.post("/interaksi/create", csrfProtection, masterdataControllerBackend.interaksicreate)
+router.post("/interaksi/update", csrfProtection, masterdataControllerBackend.interaksiupdate)
+router.get("/interaksi/data", masterdataControllerBackend.interaksidata)
+router.get("/interaksi/view", masterdataControllerBackend.interaksiview)
+router.get("/interaksi/delete", masterdataControllerBackend.interaksidelete)
+
 // Master Barang
 router.post("/barang/:slug/create", csrfProtection, masterbarangControllerBackend.create)
 router.post("/barang/:slug/update", csrfProtection, masterbarangControllerBackend.update)

@@ -46,6 +46,12 @@ module.exports = {
         }else{
             var search = "and JSON_SEARCH(UPPER(tm_data.child_value), 'all', UPPER('%"+data.search.value+"%')) IS NOT NULL"
         }
+
+        if(typeof data.select2 !='undefined'){
+            var where = "JSON_EXTRACT(tm_data.child_value, \"$.k0\") like '%master_barang_%'"
+        }else{
+            var where = `JSON_EXTRACT(tm_data.child_value, \"$.k0\") = 'master_barang_`+slug+`'`
+        }
         con.getConnection(function(err, connection) {
             connection.query(`
                 SELECT
@@ -93,7 +99,7 @@ module.exports = {
                     tm_data
                 WHERE
                     deleted_by = '0' and
-                    JSON_EXTRACT(tm_data.child_value, \"$.k0\") = 'barang_`+slug+`'
+                    `+where+`
                     `+search+`
                 ORDER BY is`+data.order[0].column+` `+data.order[0].dir+`
                 LIMIT `+data.length+`

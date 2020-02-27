@@ -4,6 +4,7 @@ const Kelasterapimodel  = require("../../model/Kelasterapi")
 const Jenisracikanmodel = require("../../model/Jenisracikan")
 const Satuanbarangmodel = require("../../model/Satuanbarang")
 const Pabrikmodel       = require("../../model/Pabrik")
+const Interaksimodel       = require("../../model/Interaksi")
 const Suppliermodel       = require("../../model/Supplier")
 const EncryptionLib     = require("../../library/encryption")
 const async             = require('async');
@@ -707,11 +708,11 @@ module.exports = {
             response.data.forEach(element => {
                 var numplus = num++
                 catchdata[numplus] = {
-                    '0': response.data[numplus].k1,
-                    '1': response.data[numplus].k2,
-                    '2': response.data[numplus].k3,
-                    '3': response.data[numplus].k4,
-                    '4': response.data[numplus].k5,
+                    '0': response.data[numplus].is0,
+                    '1': response.data[numplus].is1,
+                    '2': response.data[numplus].is2,
+                    '3': response.data[numplus].is3,
+                    '4': response.data[numplus].is4,
                     '5': `
                         <button data-toggle="modal" data-target="#modalpabrik" onclick="editpabrik('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
                         <button onclick="hapuspabrik('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
@@ -827,12 +828,12 @@ module.exports = {
             response.data.forEach(element => {
                 var numplus = num++
                 catchdata[numplus] = {
-                    '0': response.data[numplus].k1,
-                    '1': response.data[numplus].k2,
-                    '2': response.data[numplus].k3,
-                    '3': response.data[numplus].k4,
-                    '4': response.data[numplus].k5,
-                    '5': response.data[numplus].k6,
+                    '0': response.data[numplus].is0,
+                    '1': response.data[numplus].is1,
+                    '2': response.data[numplus].is2,
+                    '3': response.data[numplus].is3,
+                    '4': response.data[numplus].is4,
+                    '5': response.data[numplus].is5,
                     '6': `
                         <button data-toggle="modal" data-target="#modalsupplier" onclick="editsupplier('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
                         <button onclick="hapussupplier('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
@@ -892,5 +893,129 @@ module.exports = {
             res.redirect("/supplier")
             return false;
         })
-    }
+    },
+
+    // Gudang
+    interaksicreate: function(req, res) {
+        // Attribute Insert
+        req.body.result.k0 = "master_interaksi"
+        req.body.result.k1 = EncryptionLib.decrypt(req.body.result.k1.toString())
+        req.body.result.k2 = EncryptionLib.decrypt(req.body.result.k2.toString())
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Insert
+        Interaksimodel.insert(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/interaksi')
+                return false
+                res.send(req.body)
+            }
+        })
+    },
+    
+    interaksidata: function(req, res){
+        async.parallel({
+            count: cb => Interaksimodel.countdata(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya[0].recordsTotal);
+                    }
+                    
+                }
+            ),
+            data: cb => Interaksimodel.getfull(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya);
+                    }
+                    
+                }
+            )
+        },(err, response) => {
+            var catchdata = []
+            if(err){
+                res.send(err)
+                return false
+            }
+            var num = 0;
+            response.data.forEach(element => {
+                var numplus = num++
+                catchdata[numplus] = {
+                    '0': response.data[numplus].is0,
+                    '1': response.data[numplus].is1,
+                    '2': response.data[numplus].is2,
+                    '3': `
+                        <button data-toggle="modal" data-target="#modalinteraksi" onclick="editinteraksi('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                        <button onclick="hapusinteraksi('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                }
+            })
+            data = {
+                draw: req.query.draw,
+                status: true,
+                recordsTotal: response.count,
+                recordsFiltered: response.count,
+                data: catchdata
+            }
+            res.send(data)
+        })
+    },
+
+    interaksiupdate: function(req, res) {
+        req.body.isid = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute Insert
+        req.body.result.k0 = "master_interaksi"
+        req.body.result.k1 = EncryptionLib.decrypt(req.body.result.k1.toString())
+        req.body.result.k2 = EncryptionLib.decrypt(req.body.result.k2.toString())
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Update
+        Interaksimodel.update(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/interaksi')
+                return false
+            }
+        })
+    },
+
+    interaksiview: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Get ID
+        Interaksimodel.view(req.con, req.query.id, function(err, rows) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                rows[0].k1 = EncryptionLib.encrypt(rows[0].k1.toString())
+                rows[0].k2 = EncryptionLib.encrypt(rows[0].k2.toString())
+                res.send(rows[0])
+                return false
+            }
+        })
+    },
+
+    interaksidelete: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.query.id_update = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Get ID
+        Interaksimodel.destroy(req.con, req.query, function(err) {
+            res.redirect("/interaksi")
+            return false;
+        })
+    },
 }

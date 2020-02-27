@@ -34,7 +34,12 @@ script(type='text/javascript').
         $('#datatables_master_data_satuanbarang').DataTable({
             "processing": true,
             "serverSide": true,
-            "ajax"      : "#{host}/backend/satuanbarang/data"
+            "ajax"      : "#{host}/backend/satuanbarang/data",
+            "columnDefs": [{
+              "targets": [0, 1],
+              "orderable": false,
+              "searchable": false 
+            }]
         });
     } );
     function editsatuanbarang(id){

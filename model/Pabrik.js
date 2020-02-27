@@ -52,26 +52,26 @@ module.exports = {
                     tm_data.child_id as id,
                     JSON_UNQUOTE(
                         JSON_EXTRACT(tm_data.child_value, \"$.k1\")
-                    ) as k1,
+                    ) as is0,
                     JSON_UNQUOTE(
                         JSON_EXTRACT(tm_data.child_value, \"$.k2\")
-                    ) as k2,
+                    ) as is1,
                     JSON_UNQUOTE(
                         JSON_EXTRACT(tm_data.child_value, \"$.k3\")
-                    ) as k3,
+                    ) as is2,
                     JSON_UNQUOTE(
                         JSON_EXTRACT(tm_data.child_value, \"$.k4\")
-                    ) as k4,
+                    ) as is3,
                     JSON_UNQUOTE(
                         JSON_EXTRACT(tm_data.child_value, \"$.k5\")
-                    ) as k5
+                    ) as is4
                 FROM
                     tm_data
                 WHERE
                     deleted_by = '0' and
                     JSON_EXTRACT(tm_data.child_value, \"$.k0\") = 'master_pabrik'
                     `+search+`
-                ORDER BY k1
+                ORDER BY is`+data.order[0].column+` `+data.order[0].dir+`
                 LIMIT `+data.length+`
                 OFFSET `+data.start+`
             `, function (error, results) {

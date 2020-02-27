@@ -65,8 +65,7 @@ script(type='text/javascript').
             "columnDefs": [{
               "targets": 13,
               "orderable": false,
-              "searchable": false
-                
+              "searchable": false 
             }],
         });
     } );
@@ -369,7 +368,7 @@ script(type='text/javascript').
         $('#modal#{slug}here').html(`
             <form action="#{base_url}/backend/barang/#{slug}/create" method="POST">
                 <input type="hidden" name="_csrf" value="#{csrfToken}">
-                <input type="hidden" name="result[k0]" value="barang_#{slug}">
+                <input type="hidden" name="result[k0]" value="master_barang_#{slug}">
                 <div class="form-group">
                     <div class="row" style="margin-bottom: 2vh">
                         <div class="col-md-3">

@@ -34,7 +34,12 @@ script(type='text/javascript').
         $('#datatables_master_data_jenisracikan').DataTable({
             "processing": true,
             "serverSide": true,
-            "ajax"      : "#{host}/backend/jenisracikan/data"
+            "ajax"      : "#{host}/backend/jenisracikan/data",
+            "columnDefs": [{
+              "targets": [0,1],
+              "orderable": false,
+              "searchable": false 
+            }]
         });
     } );
     function editjenisracikan(id){

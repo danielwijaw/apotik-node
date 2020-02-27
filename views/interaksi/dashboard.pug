@@ -1,0 +1,229 @@
+link(rel='stylesheet', href='/css/datatables.min.css')
+script(src='/js/datatables.min.js')
+link(rel='stylesheet', href='/css/select2.min.css')
+script(src='/js/select2.full.min.js')
+div(class='col-xl-12 col-lg-12')
+    div(class='card shadow mb-4')
+        div(class='card-header py-3 d-flex flex-row align-items-center justify-content-between')
+            h6(class='m-0 font-weight-bold text-primary') Master Data Interaksi
+        div(class='card-body')
+            button(type="button" onclick="insertnewdata()" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalinteraksi") Tambah Data
+            br
+            br
+            table(id="datatables_master_data_interaksi" style="width:100%")
+                thead
+                    tr
+                        th Data 1
+                        th Data 2
+                        th Interaksi
+                        th &nbsp;
+                tbody
+                tfoot  
+                    tr
+                        th Data 1
+                        th Data 2
+                        th Interaksi
+                        th &nbsp;
+
+//- Modal Show
+div(id="modalinteraksi" class="modal fade" role="dialog")
+    div(class="modal-dialog modal-lg")
+        div(class="modal-content")
+            div(class="modal-header")
+                h4(class="modal-title" id="modalinteraksititle")
+                button(type="button" class="close" data-dismiss="modal") &times;
+            div(class="modal-body")
+                div(id="modalinteraksihere" class="col-md-12")
+
+script(type='text/javascript').
+    $(document).ready(function() {
+        $('#datatables_master_data_interaksi').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax"      : "#{host}/backend/interaksi/data",
+            "columnDefs": [{
+              "targets": 3,
+              "orderable": false,
+              "searchable": false 
+            }],
+        });
+    } );
+    function editinteraksi(id){
+        $('#modalinteraksititle').html("Edit Data Gudang")
+        $('#modalinteraksihere').html('Loading Data..')
+        $.ajax({
+            url: "#{base_url}/backend/interaksi/view?id="+id,
+            contentType: false,
+            cache: true,
+            processData: false,
+            success: function(data) {
+                $('#modalinteraksihere').html(`
+                    <form action="#{base_url}/backend/interaksi/update?id=`+id+`" method="POST">
+                        <input type="hidden" name="_csrf" value="#{csrfToken}">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Data 1</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="hidden" name="result[k1_text]" value="`+data.k1_text+`" id="k1_text" required>
+                                    <select class="form-control k1_select2" name="result[k1]" required>
+                                        <option selected value="`+data.k1+`">`+data.k1_text+`</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Data 2</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="hidden" name="result[k2_text]" value="`+data.k2_text+`" id="k2_text" required>
+                                    <select class="form-control k2_select2" name="result[k2]" required>
+                                        <option value="`+data.k2+`" selected>`+data.k2_text+`</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>Interaksi</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" name="result[k3]" placeholder="Silahkan diisi..." required>`+data.k3+`</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Perbarui Data">
+                        </div>
+                    </form>
+                `);
+                $(".k1_select2").select2({
+                    placeholder: 'Silahkan pilih...',
+                    allowClear: true,
+                    width: '100%',
+                    ajax: {
+                        url: "#{host}/backend/barang/alat_kesehatan/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                        dataType: 'json'
+                    }
+                });
+                $('.k1_select2').on('select2:select', function (e) {
+                    $("#k1_text").val(e.params.data.text);
+                });
+                $(".k2_select2").select2({
+                    placeholder: 'Silahkan pilih...',
+                    allowClear: true,
+                    width: '100%',
+                    ajax: {
+                        url: "#{host}/backend/barang/alat_kesehatan/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                        dataType: 'json'
+                    }
+                });
+                $('.k2_select2').on('select2:select', function (e) {
+                    $("#k2_text").val(e.params.data.text);
+                });
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#modalinteraksihere').html("<p class='ajaxloadingdata'>Error Catching Data</p>");
+                $("#catching_error").html(XMLHttpRequest.responseText); 
+                if (XMLHttpRequest.status == 0) {
+                alert(' Check Your Network.');
+                } else if (XMLHttpRequest.status == 404) {
+                alert('Requested URL not found.');
+                } else if (XMLHttpRequest.status == 500) {
+                alert('Internel Server Error.');
+                }  else {
+                alert('Unknow Error.\n' + XMLHttpRequest.responseText);
+                } 
+            }
+        });
+    }
+    function hapusinteraksi(id){
+        var check = confirm("Anda Yakin Akan Menghapus Data?");
+        if (check == true) {
+            window.location = "#{base_url}/backend/interaksi/delete?id="+id;
+        }
+        else {
+            return false;
+        }
+    }
+    function insertnewdata(){
+        $('#modalinteraksititle').html("Tambah Data Gudang")
+        $('#modalinteraksihere').html('Loading Data..')
+        $('#modalinteraksihere').html(`
+            <form action="#{base_url}/backend/interaksi/create" method="POST">
+                <input type="hidden" name="_csrf" value="#{csrfToken}">
+                <div class="form-group">
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Data 1</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="hidden" name="result[k1_text]" id="k1_text" required>
+                            <select class="form-control k1_select2" name="result[k1]" required>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Data 2</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="hidden" name="result[k2_text]" id="k2_text" required>
+                            <select class="form-control k2_select2" name="result[k2]" required>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Interaksi</label>
+                        </div>
+                        <div class="col-md-9">
+                            <textarea class="form-control" name="result[k3]" placeholder="Silahkan diisi..." required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Tambah Data">
+                </div>
+            </form>
+        `);
+        $(".k1_select2").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "#{host}/backend/barang/alat_kesehatan/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                dataType: 'json'
+            }
+        });
+        $('.k1_select2').on('select2:select', function (e) {
+            $("#k1_text").val(e.params.data.text);
+        });
+        $(".k2_select2").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "#{host}/backend/barang/alat_kesehatan/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                dataType: 'json',
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        page: params.page
+                    }
+                    return query;
+                }
+            }
+        });
+        $('.k2_select2').on('select2:select', function (e) {
+            $("#k2_text").val(e.params.data.text);
+        });
+    }
