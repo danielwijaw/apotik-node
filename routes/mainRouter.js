@@ -63,6 +63,10 @@ router.get("/setting/embalasedashboard", csrfProtection, apotekControllerFronten
 router.get("/setting/hargajual", apotekControllerFrontend.settingharga)
 router.get("/setting/hargajualdashboard", csrfProtection, apotekControllerFrontend.hargajualdashboard)
 
+// Detail Batch
+router.get("/detailbatch", masterdataControllerFrontend.detailbatchindex)
+router.get("/detailbatch/dashboard", csrfProtection, masterdataControllerFrontend.detailbatchdashboard)
+
 // Master Barang
 router.get("/barang/:slug", masterbarangControllerFrontend.barang)
 router.get("/barangview/:slug", csrfProtection, masterbarangControllerFrontend.barangview)

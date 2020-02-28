@@ -4,9 +4,11 @@ const Kelasterapimodel  = require("../../model/Kelasterapi")
 const Jenisracikanmodel = require("../../model/Jenisracikan")
 const Satuanbarangmodel = require("../../model/Satuanbarang")
 const Pabrikmodel       = require("../../model/Pabrik")
-const Interaksimodel       = require("../../model/Interaksi")
-const Suppliermodel       = require("../../model/Supplier")
+const Interaksimodel    = require("../../model/Interaksi")
+const Suppliermodel     = require("../../model/Supplier")
+const Detailbatchmodel  = require("../../model/Detailbatch")
 const EncryptionLib     = require("../../library/encryption")
+const Confignpm         = require("../../library/confignpm")
 const async             = require('async');
 
 module.exports = {
@@ -191,6 +193,8 @@ module.exports = {
                 response.data.forEach(element => {
                     var numplus = num++
                     response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
+                    response.data[numplus].slug = response.data[numplus].text.toLowerCase()
+                    response.data[numplus].slug = response.data[numplus].slug.replace(new RegExp(" ", 'g'), "_")
                 })
                 data = {
                     results: response.data,
@@ -675,6 +679,17 @@ module.exports = {
     },
     
     pabrikdata: function(req, res){
+        if(typeof req.query.q !='undefined'){
+            req.query.search.value = req.query.q
+        }
+        if(typeof req.query.order =='undefined'){
+            req.query.order =  {
+                0 :{
+                    column  : 1,
+                    dir     : "DESC"
+                }
+            }
+        }
         async.parallel({
             count: cb => Pabrikmodel.countdata(req.con, req.query,
                 function(err, results) { 
@@ -705,25 +720,37 @@ module.exports = {
                 return false
             }
             var num = 0;
-            response.data.forEach(element => {
-                var numplus = num++
-                catchdata[numplus] = {
-                    '0': response.data[numplus].is0,
-                    '1': response.data[numplus].is1,
-                    '2': response.data[numplus].is2,
-                    '3': response.data[numplus].is3,
-                    '4': response.data[numplus].is4,
-                    '5': `
-                        <button data-toggle="modal" data-target="#modalpabrik" onclick="editpabrik('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
-                        <button onclick="hapuspabrik('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+            if(typeof req.query.select2 != 'undefined'){
+                response.data.forEach(element => {
+                    var numplus = num++
+                    response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
+                    response.data[numplus].text = response.data[numplus].is1
+                })
+                data = {
+                    results: response.data,
+                    pagination: false
                 }
-            })
-            data = {
-                draw: req.query.draw,
-                status: true,
-                recordsTotal: response.count,
-                recordsFiltered: response.count,
-                data: catchdata
+            }else{
+                response.data.forEach(element => {
+                    var numplus = num++
+                    catchdata[numplus] = {
+                        '0': response.data[numplus].is0,
+                        '1': response.data[numplus].is1,
+                        '2': response.data[numplus].is2,
+                        '3': response.data[numplus].is3,
+                        '4': response.data[numplus].is4,
+                        '5': `
+                            <button data-toggle="modal" data-target="#modalpabrik" onclick="editpabrik('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                            <button onclick="hapuspabrik('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                    }
+                })
+                data = {
+                    draw: req.query.draw,
+                    status: true,
+                    recordsTotal: response.count,
+                    recordsFiltered: response.count,
+                    data: catchdata
+                }
             }
             res.send(data)
         })
@@ -895,7 +922,7 @@ module.exports = {
         })
     },
 
-    // Gudang
+    // Interaksi
     interaksicreate: function(req, res) {
         // Attribute Insert
         req.body.result.k0 = "master_interaksi"
@@ -1015,6 +1042,134 @@ module.exports = {
         // Get ID
         Interaksimodel.destroy(req.con, req.query, function(err) {
             res.redirect("/interaksi")
+            return false;
+        })
+    },
+
+    // Detailbatch
+    detailbatchcreate: function(req, res) {
+        // Attribute Insert
+        req.body.result.k0 = "master_detailbatch"
+        req.body.result.k1 = EncryptionLib.decrypt(req.body.result.k1.toString())
+        req.body.result.k2 = EncryptionLib.decrypt(req.body.result.k2.toString())
+        req.body.result.k3 = EncryptionLib.decrypt(req.body.result.k3.toString())
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Insert
+        Detailbatchmodel.insert(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/detailbatch')
+                return false
+                res.send(req.body)
+            }
+        })
+    },
+    
+    detailbatchdata: function(req, res){
+        async.parallel({
+            count: cb => Detailbatchmodel.countdata(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya[0].recordsTotal);
+                    }
+                    
+                }
+            ),
+            data: cb => Detailbatchmodel.getfull(req.con, req.query,
+                function(err, results) { 
+                    if (err){
+                        return cb(err);
+                    }else{
+                        var resultnya = JSON.parse(JSON.stringify(results))
+                        cb(undefined, resultnya);
+                    }
+                    
+                }
+            )
+        },(err, response) => {
+            var catchdata = []
+            if(err){
+                res.send(err)
+                return false
+            }
+            var num = 0;
+            response.data.forEach(element => {
+                var numplus = num++
+                catchdata[numplus] = {
+                    '0': response.data[numplus].is0,
+                    '1': response.data[numplus].is1,
+                    '2': response.data[numplus].is2,
+                    '3': response.data[numplus].is3,
+                    '4': response.data[numplus].is4,
+                    '5': `
+                        <button data-toggle="modal" data-target="#modaldetailbatch" onclick="editdetailbatch('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                        <button onclick="hapusdetailbatch('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                }
+            })
+            data = {
+                draw: req.query.draw,
+                status: true,
+                recordsTotal: response.count,
+                recordsFiltered: response.count,
+                data: catchdata
+            }
+            res.send(data)
+        })
+    },
+
+    detailbatchupdate: function(req, res) {
+        req.body.isid = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute Insert
+        req.body.result.k0 = "master_detailbatch"
+        req.body.result.k1 = req.body.result.k2.toLowerCase()
+        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Update
+        Detailbatchmodel.update(req.con, req.body, function(err) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                res.redirect('/detailbatch')
+                return false
+            }
+        })
+    },
+
+    detailbatchview: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Get ID
+        Detailbatchmodel.view(req.con, req.query.id, function(err, rows) {
+            if(err){
+                res.send(err)
+                return false
+            }else{
+                rows[0].k1 = EncryptionLib.encrypt(rows[0].k1.toString())
+                rows[0].k2 = EncryptionLib.encrypt(rows[0].k2.toString())
+                rows[0].k3 = EncryptionLib.encrypt(rows[0].k3.toString())
+                res.send(rows[0])
+                return false
+            }
+        })
+    },
+
+    detailbatchdelete: function(req, res) {
+        req.query.id = EncryptionLib.decrypt(req.query.id.toString())
+        // Attribute ID
+        req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
+        req.query.id_update = EncryptionLib.decrypt(req.cookies['cookielogin'].id)
+        // Get ID
+        Detailbatchmodel.destroy(req.con, req.query, function(err) {
+            res.redirect("/detailbatch")
             return false;
         })
     },

@@ -81,4 +81,14 @@ module.exports = {
     interaksidashboard: function(req, res) {
         res.render("interaksi/dashboard", { base_url: host, csrfToken: req.csrfToken() })
     },
+
+    // Detail Batch
+    detailbatchindex: function(req, res) {
+        site = host+"/detailbatch/dashboard"
+        res.render("apotek/main", { title: 'Master Data Detail Batch', url: site, base_url: host})
+    },
+
+    detailbatchdashboard: function(req, res) {
+        res.render("detailbatch/dashboard", { base_url: host, csrfToken: req.csrfToken() })
+    },
 }

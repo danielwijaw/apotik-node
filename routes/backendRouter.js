@@ -74,6 +74,13 @@ router.get("/interaksi/data", masterdataControllerBackend.interaksidata)
 router.get("/interaksi/view", masterdataControllerBackend.interaksiview)
 router.get("/interaksi/delete", masterdataControllerBackend.interaksidelete)
 
+// Detail Batch
+router.post("/detailbatch/create", csrfProtection, masterdataControllerBackend.detailbatchcreate)
+router.post("/detailbatch/update", csrfProtection, masterdataControllerBackend.detailbatchupdate)
+router.get("/detailbatch/data", masterdataControllerBackend.detailbatchdata)
+router.get("/detailbatch/view", masterdataControllerBackend.detailbatchview)
+router.get("/detailbatch/delete", masterdataControllerBackend.detailbatchdelete)
+
 // Master Barang
 router.post("/barang/:slug/create", csrfProtection, masterbarangControllerBackend.create)
 router.post("/barang/:slug/update", csrfProtection, masterbarangControllerBackend.update)

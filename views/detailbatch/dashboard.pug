@@ -1,0 +1,293 @@
+link(rel='stylesheet', href='/css/datatables.min.css')
+script(src='/js/datatables.min.js')
+link(rel='stylesheet', href='/css/select2.min.css')
+script(src='/js/select2.full.min.js')
+div(class='col-xl-12 col-lg-12')
+    div(class='card shadow mb-4')
+        div(class='card-header py-3 d-flex flex-row align-items-center justify-content-between')
+            h6(class='m-0 font-weight-bold text-primary') Master Data Detail Batch
+        div(class='card-body')
+            button(type="button" onclick="insertnewdata()" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modaldetailbatch") Tambah Data
+            br
+            br
+            table(id="datatables_master_data_detailbatch" style="width:100%")
+                thead
+                    tr
+                        th Jenis
+                        th Barang
+                        th Pabrik
+                        th HPP
+                        th ED
+                        th &nbsp;
+                tbody
+                tfoot  
+                    tr
+                        th Jenis
+                        th Barang
+                        th Pabrik
+                        th HPP
+                        th ED
+                        th &nbsp;
+
+//- Modal Show
+div(id="modaldetailbatch" class="modal fade" role="dialog")
+    div(class="modal-dialog modal-lg")
+        div(class="modal-content")
+            div(class="modal-header")
+                h4(class="modal-title" id="modaldetailbatchtitle")
+                button(type="button" class="close" data-dismiss="modal") &times;
+            div(class="modal-body")
+                div(id="modaldetailbatchhere" class="col-md-12")
+
+script(type='text/javascript').
+    $(document).ready(function() {
+        $('#datatables_master_data_detailbatch').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax"      : "#{host}/backend/detailbatch/data",
+            "columnDefs": [{
+              "targets": 5,
+              "orderable": false,
+              "searchable": false 
+            }]
+        });
+    } );
+    function editdetailbatch(id){
+        $('#modaldetailbatchtitle').html("Edit Data Detail Batch")
+        $('#modaldetailbatchhere').html('Loading Data..')
+        $.ajax({
+            url: "#{base_url}/backend/detailbatch/view?id="+id,
+            contentType: false,
+            cache: true,
+            processData: false,
+            success: function(data) {
+                $('#modaldetailbatchhere').html(`
+                    <form action="#{base_url}/backend/detailbatch/update?id=`+id+`" method="POST">
+                        <input type="hidden" name="_csrf" value="#{csrfToken}">
+                        <div class="form-group">
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Jenis</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="hidden" value="`+data.k1_text+`" name="result[k1_text]" id="k1_text" required>
+                                    <select class="form-control k1_select2" name="result[k1]" required>
+                                        <option value="`+data.k1+`" selected>`+data.k1_text+`</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Barang</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="hidden" value="`+data.k2_text+`" name="result[k2_text]" id="k2_text" required>
+                                    <select class="form-control k2_select2" name="result[k2]" required>
+                                        <option value="`+data.k2+`">`+data.k2_text+`</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>Pabrik</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="hidden" value="`+data.k3_text+`" name="result[k3_text]" id="k3_text" required>
+                                    <select class="form-control k3_select2" name="result[k3]" required>
+                                        <option value="`+data.k3+`" selected>`+data.k3_text+`</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>HPP (Rp.)</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input value="`+data.k4+`" type="text" name="result[k4]" placeholder="Contoh 25000" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
+                                    <label>ED</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input value="`+data.k5+`" type="date" name="result[k5]" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Perbarui Data">
+                        </div>
+                    </form>
+                `)
+                $(".k1_select2").select2({
+                    placeholder: 'Silahkan pilih...',
+                    allowClear: true,
+                    width: '100%',
+                    ajax: {
+                        url: "#{host}/backend/jenisbarang/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                        dataType: 'json',
+                    }
+                });
+                $('.k1_select2').on('select2:select', function (e) {
+                    $("#k1_text").val(e.params.data.text);
+                    $(".k2_select2").val("");
+                    $(".k2_select2").select2({
+                        placeholder: 'Silahkan pilih...',
+                        allowClear: true,
+                        width: '100%',
+                        ajax: {
+                            url: "#{host}/backend/barang/"+e.params.data.slug+"/data?search[value]=&start=0&length=100&select2=true&allow=true&select2slug=oke",
+                            dataType: 'json'
+                        }
+                    });
+                });
+                $(".k2_select2").select2({
+                    placeholder: 'Silahkan pilih...',
+                    width: '100%'
+                });
+                $('.k2_select2').on('select2:select', function (e) {
+                    $("#k2_text").val(e.params.data.text);
+                });
+                $(".k3_select2").select2({
+                    placeholder: 'Silahkan pilih...',
+                    allowClear: true,
+                    width: '100%',
+                    ajax: {
+                        url: "#{host}/backend/pabrik/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                        dataType: 'json',
+                    }
+                });
+                $('.k3_select2').on('select2:select', function (e) {
+                    $("#k3_text").val(e.params.data.text);
+                });
+                var today = new Date().toISOString().split('T')[0];
+                document.getElementsByName("result[k5]")[0].setAttribute('min', today);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#modaldetailbatchhere').html("<p class='ajaxloadingdata'>Error Catching Data</p>");
+                $("#catching_error").html(XMLHttpRequest.responseText); 
+                if (XMLHttpRequest.status == 0) {
+                alert(' Check Your Network.');
+                } else if (XMLHttpRequest.status == 404) {
+                alert('Requested URL not found.');
+                } else if (XMLHttpRequest.status == 500) {
+                alert('Internel Server Error.');
+                }  else {
+                alert('Unknow Error.\n' + XMLHttpRequest.responseText);
+                } 
+            }
+        });
+    }
+    function hapusdetailbatch(id){
+        var check = confirm("Anda Yakin Akan Menghapus Data?");
+        if (check == true) {
+            window.location = "#{base_url}/backend/detailbatch/delete?id="+id;
+        }
+        else {
+            return false;
+        }
+    }
+    function insertnewdata(){
+        $('#modaldetailbatchtitle').html("Tambah Data Detail Batch")
+        $('#modaldetailbatchhere').html('Loading Data..')
+        $('#modaldetailbatchhere').html(`
+            <form action="#{base_url}/backend/detailbatch/create" method="POST">
+                <input type="hidden" name="_csrf" value="#{csrfToken}">
+                <div class="form-group">
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Jenis</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="hidden" name="result[k1_text]" id="k1_text" required>
+                            <select class="form-control k1_select2" name="result[k1]" required>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Barang</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="hidden" name="result[k2_text]" id="k2_text" required>
+                            <select class="form-control k2_select2" name="result[k2]" required>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>Pabrik</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="hidden" name="result[k3_text]" id="k3_text" required>
+                            <select class="form-control k3_select2" name="result[k3]" required>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>HPP (Rp.)</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" name="result[k4]" placeholder="Contoh 25000" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
+                            <label>ED</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="date" name="result[k5]" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="submit_form" class="btn btn-primary btn-sm" type="submit" value="Tambah Data">
+                </div>
+            </form>
+        `)
+        $(".k1_select2").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "#{host}/backend/jenisbarang/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                dataType: 'json',
+            }
+        });
+        $('.k1_select2').on('select2:select', function (e) {
+            $("#k1_text").val(e.params.data.text);
+            $(".k2_select2").val("");
+            $(".k2_select2").select2({
+                placeholder: 'Silahkan pilih...',
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "#{host}/backend/barang/"+e.params.data.slug+"/data?search[value]=&start=0&length=100&select2=true&allow=true&select2slug=oke",
+                    dataType: 'json'
+                }
+            });
+        });
+        $(".k2_select2").select2({
+            placeholder: 'Silahkan pilih...',
+            width: '100%'
+        });
+        $('.k2_select2').on('select2:select', function (e) {
+            $("#k2_text").val(e.params.data.text);
+        });
+        $(".k3_select2").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "#{host}/backend/pabrik/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                dataType: 'json',
+            }
+        });
+        $('.k3_select2').on('select2:select', function (e) {
+            $("#k3_text").val(e.params.data.text);
+        });
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementsByName("result[k5]")[0].setAttribute('min', today);
+    }
