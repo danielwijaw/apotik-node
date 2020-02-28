@@ -31,7 +31,7 @@ module.exports = {
                 tm_data 
             WHERE 
                 deleted_by = '0' and
-                JSON_EXTRACT(tm_data.child_value, \"$.k0\") = 'barang_`+slug+`'
+                JSON_EXTRACT(tm_data.child_value, \"$.k0\") = 'master_barang_`+slug+`'
                 `+search+`
             `, function (error, results) {
                 callback(error, results)
@@ -233,24 +233,6 @@ module.exports = {
                 deleted_by = '${data.id_update}'
             WHERE
                 child_id = '`+data.id+`'
-            `, function (error, results) {
-                callback(error, results)
-                connection.destroy()
-            });
-        });
-    },
-  
-    countdata: function(con, data, slug, callback) {
-        var search = ""
-        con.getConnection(function(err, connection) {
-            connection.query(`
-            SELECT 
-                count(tm_data.child_id) as recordsTotal 
-            FROM 
-                tm_data 
-            WHERE 
-                JSON_EXTRACT(tm_data.child_value, \"$.k0\") = 'barang_`+slug+`'
-                `+search+`
             `, function (error, results) {
                 callback(error, results)
                 connection.destroy()
