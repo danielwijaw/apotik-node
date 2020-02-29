@@ -100,6 +100,14 @@ script(type='text/javascript').
                             </div>
                             <div class="row" style="margin-bottom: 2vh">
                                 <div class="col-md-3">
+                                    <label>Kode Batch</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="k6_val" value="`+data.k6+`" type="text" name="result[k6]" placeholder="Contoh BTC-AK-12" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2vh">
+                                <div class="col-md-3">
                                     <label>HPP (Rp.)</label>
                                 </div>
                                 <div class="col-md-9">
@@ -148,6 +156,7 @@ script(type='text/javascript').
                 });
                 $('.k2_select2').on('select2:select', function (e) {
                     $("#k2_text").val(e.params.data.text);
+                    $("#k6_val").val("BTC_"+e.params.data.is1)
                 });
                 $(".k3_select2").select2({
                     placeholder: 'Silahkan pilih...',
@@ -227,6 +236,14 @@ script(type='text/javascript').
                     </div>
                     <div class="row" style="margin-bottom: 2vh">
                         <div class="col-md-3">
+                            <label>Kode Batch</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input id="k6_val" type="text" name="result[k6]" placeholder="Contoh BTC-AK-12" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2vh">
+                        <div class="col-md-3">
                             <label>HPP (Rp.)</label>
                         </div>
                         <div class="col-md-9">
@@ -275,6 +292,7 @@ script(type='text/javascript').
         });
         $('.k2_select2').on('select2:select', function (e) {
             $("#k2_text").val(e.params.data.text);
+            $("#k6_val").val("BTC_"+e.params.data.is1)
         });
         $(".k3_select2").select2({
             placeholder: 'Silahkan pilih...',

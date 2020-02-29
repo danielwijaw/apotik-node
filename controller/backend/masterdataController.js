@@ -64,16 +64,19 @@ module.exports = {
                 res.send(err)
                 return false
             }
-            var num = 0;
-            response.data.forEach(element => {
-                var numplus = num++
+            for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
+                if(typeof req.query.stock != 'undefined'){
+                    var button = `<buttton onclick="showgudang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`', '`+response.data[numplus].text+`')" class=\"btn btn-primary btn-md\" style="cursor: pointer"><i class="fas fa-fw fa-folder-open"></i></buttton>`
+                }else{
+                    var button = `
+                    <button data-toggle="modal" data-target="#modalgudang" onclick="editgudang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                    <button onclick="hapusgudang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                }
                 catchdata[numplus] = {
                     '0': response.data[numplus].text,
-                    '1': `
-                        <button data-toggle="modal" data-target="#modalgudang" onclick="editgudang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
-                        <button onclick="hapusgudang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                    '1': button
                 }
-            })
+            }
             data = {
                 draw: req.query.draw,
                 status: true,
@@ -188,28 +191,25 @@ module.exports = {
                 res.send(err)
                 return false
             }
-            var num = 0;
             if(typeof req.query.select2!='undefined'){
-                response.data.forEach(element => {
-                    var numplus = num++
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
                     response.data[numplus].slug = response.data[numplus].text.toLowerCase()
                     response.data[numplus].slug = response.data[numplus].slug.replace(new RegExp(" ", 'g'), "_")
-                })
+                }
                 data = {
                     results: response.data,
                     pagination: false
                 }
             }else{
-                response.data.forEach(element => {
-                    var numplus = num++
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     catchdata[numplus] = {
                         '0': response.data[numplus].text,
                         '1': `
                             <button data-toggle="modal" data-target="#modaljenisbarang" onclick="editjenisbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
                             <button onclick="hapusjenisbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
                     }
-                })
+                }
                 data = {
                     draw: req.query.draw,
                     status: true,
@@ -325,26 +325,23 @@ module.exports = {
                 res.send(err)
                 return false
             }
-            var num = 0;
             if(typeof req.query.select2!='undefined'){
-                response.data.forEach(element => {
-                    var numplus = num++
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
-                })
+                }
                 data = {
                     results: response.data,
                     pagination: false
                 }
             }else{
-                response.data.forEach(element => {
-                    var numplus = num++
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     catchdata[numplus] = {
                         '0': response.data[numplus].text,
                         '1': `
                             <button data-toggle="modal" data-target="#modalkelasterapi" onclick="editkelasterapi('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
                             <button onclick="hapuskelasterapi('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
                     }
-                })
+                }
                 data = {
                     draw: req.query.draw,
                     status: true,
@@ -456,16 +453,14 @@ module.exports = {
                 res.send(err)
                 return false
             }
-            var num = 0;
-            response.data.forEach(element => {
-                var numplus = num++
+            for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                 catchdata[numplus] = {
                     '0': response.data[numplus].text,
                     '1': `
                         <button data-toggle="modal" data-target="#modaljenisracikan" onclick="editjenisracikan('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
                         <button onclick="hapusjenisracikan('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
                 }
-            })
+            }
             data = {
                 draw: req.query.draw,
                 status: true,
@@ -579,26 +574,23 @@ module.exports = {
                 res.send(err)
                 return false
             }
-            var num = 0;
             if(typeof req.query.select2!='undefined'){
-                response.data.forEach(element => {
-                    var numplus = num++
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
-                })
+                }
                 data = {
                     results: response.data,
                     pagination: false
                 }
             }else{
-                response.data.forEach(element => {
-                    var numplus = num++
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     catchdata[numplus] = {
                         '0': response.data[numplus].text,
                         '1': `
                             <button data-toggle="modal" data-target="#modalsatuanbarang" onclick="editsatuanbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
                             <button onclick="hapussatuanbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
                     }
-                })
+                }
                 data = {
                     draw: req.query.draw,
                     status: true,
@@ -719,20 +711,17 @@ module.exports = {
                 res.send(err)
                 return false
             }
-            var num = 0;
             if(typeof req.query.select2 != 'undefined'){
-                response.data.forEach(element => {
-                    var numplus = num++
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
                     response.data[numplus].text = response.data[numplus].is1
-                })
+                }
                 data = {
                     results: response.data,
                     pagination: false
                 }
             }else{
-                response.data.forEach(element => {
-                    var numplus = num++
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     catchdata[numplus] = {
                         '0': response.data[numplus].is0,
                         '1': response.data[numplus].is1,
@@ -743,7 +732,7 @@ module.exports = {
                             <button data-toggle="modal" data-target="#modalpabrik" onclick="editpabrik('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
                             <button onclick="hapuspabrik('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
                     }
-                })
+                }
                 data = {
                     draw: req.query.draw,
                     status: true,
@@ -851,9 +840,7 @@ module.exports = {
                 res.send(err)
                 return false
             }
-            var num = 0;
-            response.data.forEach(element => {
-                var numplus = num++
+            for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                 catchdata[numplus] = {
                     '0': response.data[numplus].is0,
                     '1': response.data[numplus].is1,
@@ -865,7 +852,7 @@ module.exports = {
                         <button data-toggle="modal" data-target="#modalsupplier" onclick="editsupplier('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
                         <button onclick="hapussupplier('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
                 }
-            })
+            }
             data = {
                 draw: req.query.draw,
                 status: true,
@@ -974,9 +961,7 @@ module.exports = {
                 res.send(err)
                 return false
             }
-            var num = 0;
-            response.data.forEach(element => {
-                var numplus = num++
+            for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                 catchdata[numplus] = {
                     '0': response.data[numplus].is0,
                     '1': response.data[numplus].is1,
@@ -985,7 +970,7 @@ module.exports = {
                         <button data-toggle="modal" data-target="#modalinteraksi" onclick="editinteraksi('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
                         <button onclick="hapusinteraksi('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
                 }
-            })
+            }
             data = {
                 draw: req.query.draw,
                 status: true,
@@ -1070,6 +1055,17 @@ module.exports = {
     },
     
     detailbatchdata: function(req, res){
+        if(typeof req.query.order =='undefined'){
+            req.query.order =  {
+                0 :{
+                    column  : 1,
+                    dir     : "DESC"
+                }
+            }
+        }
+        if(typeof req.query.jenisid !='undefined'){
+            req.query.jenisid = EncryptionLib.decrypt(req.query.jenisid.toString())
+        }
         async.parallel({
             count: cb => Detailbatchmodel.countdata(req.con, req.query,
                 function(err, results) { 
@@ -1099,26 +1095,43 @@ module.exports = {
                 res.send(err)
                 return false
             }
-            var num = 0;
-            response.data.forEach(element => {
-                var numplus = num++
-                catchdata[numplus] = {
-                    '0': response.data[numplus].is0,
-                    '1': response.data[numplus].is1,
-                    '2': response.data[numplus].is2,
-                    '3': response.data[numplus].is3,
-                    '4': response.data[numplus].is4,
-                    '5': `
-                        <button data-toggle="modal" data-target="#modaldetailbatch" onclick="editdetailbatch('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
-                        <button onclick="hapusdetailbatch('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+            if(typeof req.query.stock!='undefined'){
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
+                    catchdata[numplus] = {
+                        '0': response.data[numplus].is1,
+                        '1': response.data[numplus].kode_batch,
+                        '2': response.data[numplus].satuan_jual,
+                        '3': '0',
+                        '4': `<input type="text" class="form-control resultstokawal" name="result[`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`, `+req.query.gudangid+`]">`
+                    }
                 }
-            })
-            data = {
-                draw: req.query.draw,
-                status: true,
-                recordsTotal: response.count,
-                recordsFiltered: response.count,
-                data: catchdata
+                data = {
+                    draw: req.query.draw,
+                    status: true,
+                    recordsTotal: response.count,
+                    recordsFiltered: response.count,
+                    data: catchdata
+                }
+            }else{
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
+                    catchdata[numplus] = {
+                        '0': response.data[numplus].is0,
+                        '1': response.data[numplus].is1,
+                        '2': response.data[numplus].is2,
+                        '3': response.data[numplus].is3,
+                        '4': response.data[numplus].is4,
+                        '5': `
+                            <button data-toggle="modal" data-target="#modaldetailbatch" onclick="editdetailbatch('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                            <button onclick="hapusdetailbatch('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                    }
+                }
+                data = {
+                    draw: req.query.draw,
+                    status: true,
+                    recordsTotal: response.count,
+                    recordsFiltered: response.count,
+                    data: catchdata
+                }
             }
             res.send(data)
         })
@@ -1128,8 +1141,9 @@ module.exports = {
         req.body.isid = EncryptionLib.decrypt(req.query.id.toString())
         // Attribute Insert
         req.body.result.k0 = "master_detailbatch"
-        req.body.result.k1 = req.body.result.k2.toLowerCase()
-        req.body.result.k1 = req.body.result.k1.replace(new RegExp(" ", 'g'), "_")
+        req.body.result.k1 = EncryptionLib.decrypt(req.body.result.k1.toString())
+        req.body.result.k2 = EncryptionLib.decrypt(req.body.result.k2.toString())
+        req.body.result.k3 = EncryptionLib.decrypt(req.body.result.k3.toString())
         // Attribute ID
         req.cookies['cookielogin']  = JSON.parse(req.cookies['cookielogin'])
         req.body.id = EncryptionLib.decrypt(req.cookies['cookielogin'].id)

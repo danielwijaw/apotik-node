@@ -9,6 +9,7 @@ const loginControllerBackend = require("../controller/backend/loginController")
 const masterdataControllerBackend = require("../controller/backend/masterdataController")
 const settingControllerBackend = require("../controller/backend/settingController")
 const masterbarangControllerBackend = require("../controller/backend/masterbarangController")
+const stockControllerBackend = require("../controller/backend/stockController")
 
 // Backend
 router.post("/login", csrfProtection, loginControllerBackend.login)
@@ -87,5 +88,8 @@ router.post("/barang/:slug/update", csrfProtection, masterbarangControllerBacken
 router.get("/barang/:slug/data", masterbarangControllerBackend.data)
 router.get("/barang/:slug/view", masterbarangControllerBackend.view)
 router.get("/barang/:slug/delete", masterbarangControllerBackend.delete)
+
+// Stock
+router.post("/stockawal", csrfProtection, stockControllerBackend.stockawal)
 
 module.exports = router

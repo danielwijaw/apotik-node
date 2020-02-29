@@ -46,6 +46,9 @@ module.exports = {
         }else{
             var search = "and JSON_SEARCH(UPPER(tm_data.child_value), 'all', UPPER('%"+data.search.value+"%')) IS NOT NULL"
         }
+        if(data.length == -1){
+            data.length = 1000
+        }
         con.getConnection(function(err, connection) {
             connection.query(`
                 SELECT
@@ -116,7 +119,6 @@ module.exports = {
         var today = new Date();
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()
         var time = today.getHours()+':'+today.getMinutes()+'-'+today.getSeconds()
-        console.log(date+' '+time)
         //   Convert from string to JSON
         datainsert = JSON.stringify(data.result)
         //   Insert Process

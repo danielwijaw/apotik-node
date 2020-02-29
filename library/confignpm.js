@@ -18,5 +18,13 @@ module.exports = {
             splitStr[i] = splitStr[i].charAt(0).toUpperCase()
         }
         return splitStr.join('')+'_';
+    },
+
+    objectToArray: function(obj){
+        let sol = []
+        for (key in obj){
+            sol.push([key, obj[key]])
+        }
+        return sol
     }
 }

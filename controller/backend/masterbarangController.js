@@ -104,22 +104,38 @@ module.exports = {
                 res.send(err)
                 return false
             }
-            var num = 0;
             if(typeof req.query.select2!='undefined'){
-                response.data.forEach(element => {
-                    var numplus = num++
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
                     response.data[numplus].text = response.data[numplus].is2
-                })
+                }
                 data = {
                     results: response.data,
                     pagination: {
                         more: false
                     }
                 }
+            }else if(typeof req.query.stock!='undefined'){
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
+                    catchdata[numplus] = {
+                        '0': response.data[numplus].is2,
+                        '1': response.data[numplus].is1,
+                        '2': response.data[numplus].is4,
+                        '3': '0',
+                        '4': `
+                            <input type="text" class="form-control" name="[`+EncryptionLib.encrypt(response.data[numplus].k2.toString())+` , `+EncryptionLib.encrypt(response.data[numplus].id.toString())+`]">
+                            `
+                    }
+                }
+                data = {
+                    draw: req.query.draw,
+                    status: true,
+                    recordsTotal: response.count,
+                    recordsFiltered: response.count,
+                    data: catchdata
+                }
             }else{
-                response.data.forEach(element => {
-                    var numplus = num++
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     catchdata[numplus] = {
                         '0': response.data[numplus].is0,
                         '1': response.data[numplus].is1,
@@ -138,7 +154,7 @@ module.exports = {
                             <button data-toggle="modal" data-target="#modal`+req.params.slug+`" onclick="editbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
                             <button onclick="hapusbarang('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
                     }
-                })
+                }
                 data = {
                     draw: req.query.draw,
                     status: true,

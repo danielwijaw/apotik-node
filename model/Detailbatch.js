@@ -46,10 +46,31 @@ module.exports = {
         }else{
             var search = "and JSON_SEARCH(UPPER(tm_data.child_value), 'all', UPPER('%"+data.search.value+"%')) IS NOT NULL"
         }
+        if(data.length == -1){
+            data.length = 1000
+        }
+        if(typeof data.stock!='undefined'){
+            var select = `JSON_UNQUOTE(
+                JSON_EXTRACT(tm_barang.child_value, \"$.k10_text\")
+            ) as satuan_jual,
+            JSON_UNQUOTE(
+                JSON_EXTRACT(tm_data.child_value, \"$.k6\")
+            ) as kode_batch,`
+            var join = `INNER JOIN tm_barang on JSON_UNQUOTE(JSON_EXTRACT(tm_data.child_value, \"$.k2\")) = tm_barang.child_id`
+        }else{
+            var select = ""
+            var join = ""
+        }
+        if(typeof data.jenisid != 'undefined'){
+            var where = "JSON_EXTRACT(tm_data.child_value, \"$.k1\") = '"+data.jenisid+"' and"
+        }else{
+            var where = ""
+        }
         con.getConnection(function(err, connection) {
             connection.query(`
                 SELECT
                     tm_data.child_id as id,
+                    `+select+`
                     JSON_UNQUOTE(
                         JSON_EXTRACT(tm_data.child_value, \"$.k1_text\")
                     ) as is0,
@@ -67,8 +88,10 @@ module.exports = {
                     ) as is4
                 FROM
                     tm_data
+                `+join+`
                 WHERE
-                    deleted_by = '0' and
+                    tm_data.deleted_by = '0' and
+                    `+where+`
                     JSON_EXTRACT(tm_data.child_value, \"$.k0\") = 'master_detailbatch'
                     `+search+`
                 ORDER BY is`+data.order[0].column+` `+data.order[0].dir+`
@@ -108,7 +131,10 @@ module.exports = {
                     ) as k4,
                     JSON_UNQUOTE(
                         JSON_EXTRACT(tm_data.child_value, \"$.k5\")
-                    ) as k5
+                    ) as k5,
+                    JSON_UNQUOTE(
+                        JSON_EXTRACT(tm_data.child_value, \"$.k6\")
+                    ) as k6
                 FROM
                     tm_data
                 WHERE
@@ -149,7 +175,6 @@ module.exports = {
         var today = new Date();
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()
         var time = today.getHours()+':'+today.getMinutes()+'-'+today.getSeconds()
-        console.log(date+' '+time)
         //   Convert from string to JSON
         datainsert = JSON.stringify(data.result)
         //   Insert Process

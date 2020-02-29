@@ -12,13 +12,10 @@ html
             ul(id='accordionSidebar' class='navbar-nav bg-gradient-primary sidebar sidebar-dark accordion')
             div(id='content-wrapper' class='d-flex flex-column')
                 div(id='content')
-                    div(id='topbar')
+                    div(id='topbar' style='margin-bottom:2.75vh')
                     div(id='root_data')
                 div(style='display:none')
                     div(id='catching_error')
-                footer(class='sticky-footer bg-white')
-                    div(class='container my-auto')
-                        div(class='copyright text-center my-auto')
-                            span &copy; #{title}
         script(type='text/javascript').
-            ajaxlink("#{url}","#root_data");ajaxlink("#{base_url}/apotek/sidebar","#accordionSidebar");ajaxlink("#{base_url}/apotek/topbar","#topbar");
+            ajaxlink("#{url}","#root_data");ajaxlink("#{base_url}/apotek/sidebar","#accordionSidebar");
+            //- ajaxlink("#{base_url}/apotek/topbar","#topbar");

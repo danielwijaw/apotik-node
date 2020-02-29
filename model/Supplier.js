@@ -146,7 +146,6 @@ module.exports = {
         var today = new Date();
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()
         var time = today.getHours()+':'+today.getMinutes()+'-'+today.getSeconds()
-        console.log(date+' '+time)
         //   Convert from string to JSON
         datainsert = JSON.stringify(data.result)
         //   Insert Process

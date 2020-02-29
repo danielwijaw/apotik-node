@@ -6,10 +6,11 @@ const csrf = require('csurf')
 var csrfProtection = csrf({ cookie: true })
 
 // Define Controllers Frontend
-const loginControllerFrontend = require("../controller/frontend/loginController")
-const apotekControllerFrontend = require("../controller/frontend/apotekController")
-const masterdataControllerFrontend = require("../controller/frontend/masterdataController")
-const masterbarangControllerFrontend = require("../controller/frontend/masterbarangController")
+const loginControllerFrontend           = require("../controller/frontend/loginController")
+const apotekControllerFrontend          = require("../controller/frontend/apotekController")
+const masterdataControllerFrontend      = require("../controller/frontend/masterdataController")
+const masterbarangControllerFrontend    = require("../controller/frontend/masterbarangController")
+const stockControllerFrontend           = require("../controller/frontend/stockController")
 
 // Login
 router.get("/", loginControllerFrontend.main)
@@ -70,5 +71,10 @@ router.get("/detailbatch/dashboard", csrfProtection, masterdataControllerFronten
 // Master Barang
 router.get("/barang/:slug", masterbarangControllerFrontend.barang)
 router.get("/barangview/:slug", csrfProtection, masterbarangControllerFrontend.barangview)
+
+// Stock Awal
+router.get("/stockawal", stockControllerFrontend.stockawalindex)
+router.get("/stock/dashboard", csrfProtection, stockControllerFrontend.stockdashboard)
+router.get("/stock/gudangview", stockControllerFrontend.stockgudang)
 
 module.exports = router
