@@ -1066,6 +1066,9 @@ module.exports = {
         if(typeof req.query.jenisid !='undefined'){
             req.query.jenisid = EncryptionLib.decrypt(req.query.jenisid.toString())
         }
+        if(typeof req.query.gudangid !='undefined'){
+            req.query.gudangid = EncryptionLib.decrypt(req.query.gudangid.toString())
+        }
         async.parallel({
             count: cb => Detailbatchmodel.countdata(req.con, req.query,
                 function(err, results) { 
@@ -1097,12 +1100,22 @@ module.exports = {
             }
             if(typeof req.query.stock!='undefined'){
                 for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
-                    catchdata[numplus] = {
-                        '0': response.data[numplus].is1,
-                        '1': response.data[numplus].kode_batch,
-                        '2': response.data[numplus].satuan_jual,
-                        '3': '0',
-                        '4': `<input type="text" class="form-control resultstokawal" name="result[`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`, `+req.query.gudangid+`]">`
+                    if(response.data[numplus].stock_val != null){
+                        catchdata[numplus] = {
+                            '0': response.data[numplus].is1,
+                            '1': response.data[numplus].kode_batch,
+                            '2': response.data[numplus].satuan_jual,
+                            '3': '0',
+                            '4': `<input type="text" onkeyup="this.value=this.value.replace(/[^\\d]/,'')" class="form-control" value=`+response.data[numplus].stock_val+` name="result[`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`, `+EncryptionLib.encrypt(req.query.gudangid.toString())+`]" readonly>`
+                        }
+                    }else{
+                        catchdata[numplus] = {
+                            '0': response.data[numplus].is1,
+                            '1': response.data[numplus].kode_batch,
+                            '2': response.data[numplus].satuan_jual,
+                            '3': '0',
+                            '4': `<input type="text" onkeyup="this.value=this.value.replace(/[^\\d]/,'')" class="form-control resultstokawal" name="result[`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`, `+EncryptionLib.encrypt(req.query.gudangid.toString())+`]">`
+                        }
                     }
                 }
                 data = {

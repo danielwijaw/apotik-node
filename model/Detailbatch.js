@@ -66,6 +66,13 @@ module.exports = {
         }else{
             var where = ""
         }
+        if(typeof data.gudangid != 'undefined'){
+            var selectgudangid = `,tm_stock.stock_val, tm_stock.gudang_id`
+            var joingudangid = `LEFT JOIN tm_stock on tm_data.child_id = tm_stock.batch_id and tm_stock.gudang_id = `+data.gudangid+` and tm_stock.stock_type = '1'`
+        }else{
+            var selectgudangid = ""
+            var joingudangid = ""
+        }
         con.getConnection(function(err, connection) {
             connection.query(`
                 SELECT
@@ -86,9 +93,11 @@ module.exports = {
                     JSON_UNQUOTE(
                         JSON_EXTRACT(tm_data.child_value, \"$.k5\")
                     ) as is4
+                    `+selectgudangid+`
                 FROM
                     tm_data
                 `+join+`
+                `+joingudangid+`
                 WHERE
                     tm_data.deleted_by = '0' and
                     `+where+`

@@ -111,7 +111,7 @@ script(type='text/javascript').
                                     <label>HPP (Rp.)</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input value="`+data.k4+`" type="text" name="result[k4]" placeholder="Contoh 25000" class="form-control" required>
+                                    <input onkeyup="this.value=this.value.replace(/[^\\d]/,'')" value="`+data.k4+`" type="text" name="result[k4]" placeholder="Contoh 25000" class="form-control" required>
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 2vh">
@@ -247,7 +247,7 @@ script(type='text/javascript').
                             <label>HPP (Rp.)</label>
                         </div>
                         <div class="col-md-9">
-                            <input type="text" name="result[k4]" placeholder="Contoh 25000" class="form-control" required>
+                            <input type="text" onkeyup="this.value=this.value.replace(/[^\\d]/,'')" name="result[k4]" placeholder="Contoh 25000" class="form-control" required>
                         </div>
                     </div>
                     <div class="row" style="margin-bottom: 2vh">

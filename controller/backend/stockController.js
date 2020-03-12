@@ -12,13 +12,15 @@ module.exports = {
             split_key = key.split(', ')
             split_key[0] = Encryption.decrypt(split_key[0].toString())
             split_key[1] = Encryption.decrypt(split_key[1].toString())
-            catch_array.push({
-                batch_id : split_key[0],
-                gudang_id : split_key[1],
-                stock_type : 1,
-                value: resultdata[key],
-                id_create: req.body.id
-            })
+            if(resultdata[key] != ''){
+                catch_array.push({
+                    batch_id : split_key[0],
+                    gudang_id : split_key[1],
+                    stock_type : 1,
+                    value: resultdata[key],
+                    id_create: req.body.id
+                })
+            }
         }
         Stockmodel.stockinsert(req.con, catch_array, function(err, result){
             if(err){
