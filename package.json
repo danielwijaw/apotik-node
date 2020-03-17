@@ -9,9 +9,9 @@
   "author": "Daniel",
   "license": "ISC",
   "dependencies": {
-    "async": "^3.1.1",
+    "async": "^3.2.0",
     "compression": "^1.7.4",
-    "cookie-parser": "^1.4.4",
+    "cookie-parser": "^1.4.5",
     "crypto": "^1.0.1",
     "csurf": "^1.11.0",
     "dotenv": "^8.2.0",
@@ -21,5 +21,9 @@
     "nodemon": "^2.0.2",
     "pm2": "^4.2.3",
     "pug": "^2.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/danielwijaw/apotik-node.git"
   }
 }
