@@ -1,6 +1,7 @@
 const confignpm = require("../../library/confignpm")
 const http = require('http');
 var host = confignpm.base_url()
+var localhost = confignpm.local_url()
 
 module.exports = {
     // Base
@@ -14,7 +15,7 @@ module.exports = {
     },
 
     sidebar: function(req, yes) {
-        var url = host+'/backend/jenisbarang/data?allow=true&search[value]=&length=1000&start=0';
+        var url = localhost+'/backend/jenisbarang/data?allow=true&search[value]=&length=1000&start=0';
         http.get(url, function(res){
             
             var body = '';
@@ -52,7 +53,7 @@ module.exports = {
     },
 
     embalasedashboard: function(req, yes) {
-        var url = host+'/backend/setting?allow=true';
+        var url = localhost+'/backend/setting?allow=true';
         http.get(url, function(res){
             
             var body = '';
@@ -78,7 +79,7 @@ module.exports = {
     },
 
     hargajualdashboard: function(req, yes) {
-        var url = host+'/backend/setting?allow=true';
+        var url = localhost+'/backend/setting?allow=true';
         http.get(url, function(res){
             
             var body = '';

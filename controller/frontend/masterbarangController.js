@@ -1,6 +1,7 @@
 const confignpm = require("../../library/confignpm")
 const http = require('http');
 var host = confignpm.base_url()
+var localhost = confignpm.local_url()
 
 module.exports = {
     // Barang
@@ -13,7 +14,7 @@ module.exports = {
     },
 
     barangview: function(req, yes) {
-        var url = host+'/backend/setting?allow=true';
+        var url = localhost+'/backend/setting?allow=true';
         var param = req.params.slug
         var title = param.replace(new RegExp("_", 'g'), " ")
         var title = confignpm.titleCase(title)
