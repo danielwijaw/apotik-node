@@ -48,6 +48,10 @@ li(class='nav-item')
     div(id='masterCollapseManGd' class='collapse animated--fade-in' aria-labelledby='headingTwo' data-parent='#accordionSidebar')
         div(class='bg-white py-2 collapse-inner rounded')
             h6(class='collapse-header') Management Gudang
+            a(class='collapse-item' href=`${base_url}/rencanakebutuhan`) Rencana Kebutuhan
+            a(class='collapse-item' href=`${base_url}/orderkebutuhan`) Order Kebutuhan
+            a(class='collapse-item' href=`${base_url}/penerimaanbarangfaktur`) Penerimaan Barang Faktur
+            a(class='collapse-item' href=`${base_url}/penerimaanlangsung`) Penerimaan Langsung
     
     a(class='nav-link collapsed' href='javascript:void(0)' data-toggle='collapse' data-target='#masterCollapseLap' aria-expanded='true' aria-controls='collapseTwo')
         i(class='fas fa-fw fa-folder-open')
@@ -69,6 +73,7 @@ li(class='nav-item')
             h6(class='collapse-header') Pengaturan
             a(class='collapse-item' href=`${base_url}/setting/embalase`) Embalase
             a(class='collapse-item' href=`${base_url}/setting/hargajual`) Harga Jual
+            a(class='collapse-item' href=`${base_url}/setting/penjualan`) Penjualan
     a(class='nav-link' href=`${base_url}/backend/logout`)
         i(class='fas fa-power-off')
         span Logout

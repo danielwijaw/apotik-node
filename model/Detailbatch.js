@@ -67,8 +67,9 @@ module.exports = {
             var where = ""
         }
         if(typeof data.gudangid != 'undefined'){
-            var selectgudangid = `,tm_stock.stock_val, tm_stock.gudang_id`
-            var joingudangid = `LEFT JOIN tm_stock on tm_data.child_id = tm_stock.batch_id and tm_stock.gudang_id = `+data.gudangid+` and tm_stock.stock_type = '1'`
+            var selectgudangid = `,tm_stock.stock_val, tm_stock.gudang_id, tm_stock_gudang.stock_val as stock_now`
+            var joingudangid = `LEFT JOIN tm_stock on tm_data.child_id = tm_stock.batch_id and tm_stock.gudang_id = `+data.gudangid+` and tm_stock.stock_type = '1'
+            LEFT JOIN tm_stock as tm_stock_gudang on tm_data.child_id = tm_stock_gudang.batch_id and tm_stock_gudang.gudang_id = `+data.gudangid+` and tm_stock_gudang.stock_type = '0'`
         }else{
             var selectgudangid = ""
             var joingudangid = ""

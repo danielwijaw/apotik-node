@@ -8,7 +8,6 @@ const Interaksimodel    = require("../../model/Interaksi")
 const Suppliermodel     = require("../../model/Supplier")
 const Detailbatchmodel  = require("../../model/Detailbatch")
 const EncryptionLib     = require("../../library/encryption")
-const Confignpm         = require("../../library/confignpm")
 const async             = require('async');
 
 module.exports = {
@@ -1105,15 +1104,15 @@ module.exports = {
                             '0': response.data[numplus].is1,
                             '1': response.data[numplus].kode_batch,
                             '2': response.data[numplus].satuan_jual,
-                            '3': '0',
-                            '4': `<input type="text" onkeyup="this.value=this.value.replace(/[^\\d]/,'')" class="form-control" value=`+response.data[numplus].stock_val+` name="result[`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`, `+EncryptionLib.encrypt(req.query.gudangid.toString())+`]" readonly>`
+                            '3': response.data[numplus].stock_now,
+                            '4': `<input type="text" onkeyup="this.value=this.value.replace(/[^\\d]/,'')" class="form-control" value=`+response.data[numplus].stock_val+` readonly>`
                         }
                     }else{
                         catchdata[numplus] = {
                             '0': response.data[numplus].is1,
                             '1': response.data[numplus].kode_batch,
                             '2': response.data[numplus].satuan_jual,
-                            '3': '0',
+                            '3': response.data[numplus].stock_now,
                             '4': `<input type="text" onkeyup="this.value=this.value.replace(/[^\\d]/,'')" class="form-control resultstokawal" name="result[`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`, `+EncryptionLib.encrypt(req.query.gudangid.toString())+`]">`
                         }
                     }

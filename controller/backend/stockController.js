@@ -18,7 +18,8 @@ module.exports = {
                     gudang_id : split_key[1],
                     stock_type : 1,
                     value: resultdata[key],
-                    id_create: req.body.id
+                    id_create: req.body.id,
+                    increase_type: 1,
                 })
             }
         }

@@ -57,7 +57,7 @@ script(type='text/javascript').
         addcolor();
         $("#gudangname").html("<b>"+name+"</b>");
         $("#showdata").html(`
-            <form action="/backend/stockawal" method="POST">
+            <form id="insertstockawal" action="/backend/stockawal" method="POST">
                 <input type="hidden" name="_csrf" value="#{csrfToken}">
                 <div class="row">
                     <div class="col-md-3">
@@ -135,4 +135,24 @@ script(type='text/javascript').
                 $(".resultstokawal").val("")
             }
         });
+        $('#insertstockawal').submit(function(event){
+            var inserttext = $(".resultstokawal");
+            var detailing = "";
+            if(inserttext.length == '0'){
+                alert("Stock Awal Sudah Terisi Semua / Data Tidak Ditemukan");
+                event.preventDefault();
+                return false;
+            }else{
+                for(var i = 0; i < inserttext.length ; i++){
+                    if(inserttext[i].value != ''){
+                        detailing = '1'
+                    }
+                }
+                if(detailing == ''){
+                    alert("Harap isi Stock Awal");
+                    inserttext[0].focus()
+                    event.preventDefault();
+                }
+            }
+        })
     }
