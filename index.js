@@ -4,8 +4,14 @@ const app = express()
 const methodOverride = require("method-override")
 const path = require("path")
 const cookieParser = require('cookie-parser');
+
+const os = require("os")
+const cluster = require("cluster")
+const clusterWorkerSize = os.cpus().length 
+
 const con = require("./config/db.js")
 
+process.env.UV_THREADPOOL_SIZE = 64;
 
 // Compression
 app.use(compression())
@@ -53,6 +59,25 @@ app.use("/", mainRouter)
 app.use("/backend", backendRouter)
 
 // starting server
-const server = app.listen(3001, function() {
-  console.log(`Server listening on port ${server.address().port}`)
-})
+
+if (clusterWorkerSize > 1) {
+  if (cluster.isMaster) {
+    for (let i=0; i < clusterWorkerSize; i++) {
+      cluster.fork()
+    }
+ 
+    cluster.on("exit", function(worker) {
+      console.log("Worker", worker.id, " has exitted.")
+    })
+  } else {
+ 
+    const server = app.listen(3001, function() {
+      console.log(`Server listening on port ${server.address().port} and worker ${process.pid}`)
+    })
+  }
+} else {
+
+  const server = app.listen(3001, function() {
+    console.log(`Server listening on port ${server.address().port} and single worker ${process.pid}`)
+  })
+} 
