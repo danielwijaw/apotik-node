@@ -12,6 +12,7 @@ module.exports = {
                 if(rows != '' && typeof rows !="undefined"){
                     rows[0].id          = EncryptionLib.encrypt(rows[0].id.toString())
                     rows[0].user_access = EncryptionLib.encrypt(rows[0].user_access.toString())
+                    rows[0].role        = rows[0].role
                     rows = rows[0]
                     res.cookie('cookielogin', JSON.stringify(rows)).redirect('/apotek')
                 }else{

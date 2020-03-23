@@ -12,7 +12,10 @@ module.exports = {
                 ) as name,
                 JSON_UNQUOTE(
                     JSON_EXTRACT(tm_data.child_value, \"$.k4\")
-                ) as user_access
+                ) as user_access,
+                JSON_UNQUOTE(
+                    JSON_EXTRACT(tm_data.child_value, \"$.k5\")
+                ) as role
             FROM
                 tm_data
             WHERE

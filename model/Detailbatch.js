@@ -46,10 +46,20 @@ module.exports = {
         }else{
             var search = "and JSON_SEARCH(UPPER(tm_data.child_value), 'all', UPPER('%"+data.search.value+"%')) IS NOT NULL"
         }
+
         if(data.length == -1){
             data.length = 1000
         }
+
         if(typeof data.stock!='undefined'){
+            switch(data.stock){
+                default:
+                    var joinstock = "LEFT"
+                    break;
+                case 'opname':
+                    var joinstock = "INNER"
+                    break;
+            }
             var select = `JSON_UNQUOTE(
                 JSON_EXTRACT(tm_barang.child_value, \"$.k10_text\")
             ) as satuan_jual,
@@ -61,19 +71,22 @@ module.exports = {
             var select = ""
             var join = ""
         }
+
         if(typeof data.jenisid != 'undefined'){
             var where = "JSON_EXTRACT(tm_data.child_value, \"$.k1\") = '"+data.jenisid+"' and"
         }else{
             var where = ""
         }
+
         if(typeof data.gudangid != 'undefined'){
             var selectgudangid = `,tm_stock.stock_val, tm_stock.gudang_id, tm_stock_gudang.stock_val as stock_now`
-            var joingudangid = `LEFT JOIN tm_stock on tm_data.child_id = tm_stock.batch_id and tm_stock.gudang_id = `+data.gudangid+` and tm_stock.stock_type = '1'
-            LEFT JOIN tm_stock as tm_stock_gudang on tm_data.child_id = tm_stock_gudang.batch_id and tm_stock_gudang.gudang_id = `+data.gudangid+` and tm_stock_gudang.stock_type = '0'`
+            var joingudangid = joinstock+` JOIN tm_stock on tm_data.child_id = tm_stock.batch_id and tm_stock.gudang_id = `+data.gudangid+` and tm_stock.stock_type = '1'
+            `+joinstock+` JOIN tm_stock as tm_stock_gudang on tm_data.child_id = tm_stock_gudang.batch_id and tm_stock_gudang.gudang_id = `+data.gudangid+` and tm_stock_gudang.stock_type = '0'`
         }else{
             var selectgudangid = ""
             var joingudangid = ""
         }
+
         con.getConnection(function(err, connection) {
             connection.query(`
                 SELECT

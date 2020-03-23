@@ -1,0 +1,169 @@
+link(rel='stylesheet', href='/css/datatables.min.css')
+script(src='/js/datatables.min.js')
+link(rel='stylesheet', href='/css/select2.min.css')
+script(src='/js/select2.full.min.js')
+| <style> 
+|   .high-light{background:#4e73df !important; color: white}
+|</style>
+div(class='col-xl-12 col-lg-12')
+    div(class='card shadow mb-4')
+        div(class='card-header py-3 d-flex flex-row align-items-center justify-content-between')
+            h6(class='m-0 font-weight-bold text-primary') Stok Opname
+        div(class='card-body')
+            div(class="col-md-12")
+                div(class="row")
+                    div(class="col-md-3")
+                        div(class="table-responsive" style="height: 75vh")
+                            table(id="datatables_gudangview" style="width:100%")
+                                thead
+                                    tr
+                                        th(width="80%") Daftar Gudang
+                                        th(width="20%") &nbsp;
+                                tbody
+                    div(class="col-md-9")
+                        div(class="col-md-12")
+                            label(style="color:red; font-size: 90%; text-decoration: underline; text-align: center") Silahkan Isi Stok Opname <label id="gudangname"></label>, Pastikan Barang Sudah Terinput pada Menu <b>Stock Opname</b>
+                        hr
+                        div(class="col-md-12")
+                            div(id="showdata")
+
+script(type='text/javascript').
+    $(document).ready(function() {
+        $('#datatables_gudangview').DataTable({
+            "bFilter"   : false,
+            "paging"    : false,
+            "ordering"  : false,
+            "info"      : false,
+            "processing": true,
+            "serverSide": true,
+            "ajax"      : "#{host}/backend/gudang/data?stock=true",
+            "columnDefs": [{
+              "targets": [0,1],
+              "orderable": false,
+              "searchable": false 
+            }]
+        });
+    } );
+
+    function addcolor()
+    {
+        $('#datatables_gudangview tbody tr').click(function(){
+            $('#datatables_gudangview tbody tr').removeClass("high-light");
+            $(this).addClass("high-light");
+        });
+    }
+
+    function showgudang(id, name){
+        addcolor();
+        $("#gudangname").html("<b>"+name+"</b>");
+        $("#showdata").html(`
+            <form id="insertstockopname" action="/backend/stockopname" method="POST">
+                <input type="hidden" name="_csrf" value="#{csrfToken}">
+                <div class="row">
+                    <div class="col-md-3">
+                        <select class="form-control jenis_select2" required></select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" id="default_set_val">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="checkbox" id="default_checkbox" value="true">
+                        <label for="default_checkbox"> Semua Stok Sama</label>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-danger btn-md">Simpan Stok</button>
+                    </div>
+                </div>
+                <hr/>
+                <div class="col-md-12">
+                    <div id="tableshow"></div>
+                </div>
+            </form>
+
+        `);
+        $(".jenis_select2").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "#{host}/backend/jenisbarang/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                dataType: 'json',
+            }
+        });
+        $('.jenis_select2').on('select2:select', function (e) {
+            $('#tableshow').html(`
+                <div class="table-responsive">
+                    <table id="datatables_tableshow" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th width="20%">Kode Batch</th>
+                                <th width="15%">Satuan Jual</th>
+                                <th width="10%">Stock Gudang</th>
+                                <th width="15%">Stock Opname</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            `);
+            $('#datatables_tableshow').DataTable({
+                "bFilter"   : false,
+                "paging"    : false,
+                "ordering"  : false,
+                "info"      : false,
+                "processing": true,
+                "serverSide": true,
+                "ajax"      : "#{host}/backend/detailbatch/data?stock=opname&jenisid="+e.params.data.id+"&gudangid="+id,
+                "columnDefs": [{
+                "targets": [0,1],
+                "orderable": false,
+                "searchable": false 
+                }]
+            });
+        });
+        $('#default_checkbox').click(function(){
+            if($("#default_checkbox").is(':checked')){
+                if($("#default_set_val").val().length == 0){
+                    alert("Harap Isi Dulu Default Stok Awal Value")
+                    $("#default_checkbox").prop("checked", false)
+                    $("#default_set_val").focus()
+                }else{
+                    $(".resultstokopname").val($("#default_set_val").val())
+                }
+            }else{
+                $(".resultstokopname").val("")
+            }
+        });
+        $('#insertstockopname').submit(function(event){
+            var inserttext = $(".resultstokopname");
+            var detailing = "";
+            if(inserttext.length == '0'){
+                alert("Stock Opname Sudah Terisi Semua / Data Tidak Ditemukan");
+                event.preventDefault();
+                return false;
+            }else{
+                for(var i = 0; i < inserttext.length ; i++){
+                    if(inserttext[i].value != ''){
+                        detailing = '1'
+                    }
+                }
+                if(detailing == ''){
+                    alert("Harap isi Stock Opname");
+                    inserttext[0].focus()
+                    event.preventDefault();
+                }
+            }
+        })
+    }
+
+    function statusincreasedecrease(stock, val, definition){
+        var stockdiv = $("#"+stock).html()
+        var valinput = $("#"+val).val()
+        var definitioninput = $("#"+definition)
+        if(parseInt(stockdiv) > parseInt(valinput)){
+            definitioninput.val('0')
+        }else{
+            definitioninput.val('1')
+        }
+    }

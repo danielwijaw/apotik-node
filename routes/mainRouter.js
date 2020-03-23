@@ -75,6 +75,10 @@ router.get("/barangview/:slug", csrfProtection, masterbarangControllerFrontend.b
 // Stock Awal
 router.get("/stockawal", stockControllerFrontend.stockawalindex)
 router.get("/stock/dashboard", csrfProtection, stockControllerFrontend.stockdashboard)
-router.get("/stock/gudangview", stockControllerFrontend.stockgudang)
+router.get("/stock/gudangview", stockControllerFrontend.stockgudang) //Aku lali go ngapa
+
+// Stock Opname
+router.get("/stockopname", stockControllerFrontend.stockopnameindex)
+router.get("/stockopname/dashboard", csrfProtection, stockControllerFrontend.stockopnamedashboard)
 
 module.exports = router

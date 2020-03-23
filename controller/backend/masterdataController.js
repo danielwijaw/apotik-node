@@ -1098,31 +1098,53 @@ module.exports = {
                 return false
             }
             if(typeof req.query.stock!='undefined'){
-                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
-                    if(response.data[numplus].stock_val != null){
-                        catchdata[numplus] = {
-                            '0': response.data[numplus].is1,
-                            '1': response.data[numplus].kode_batch,
-                            '2': response.data[numplus].satuan_jual,
-                            '3': response.data[numplus].stock_now,
-                            '4': `<input type="text" onkeyup="this.value=this.value.replace(/[^\\d]/,'')" class="form-control" value=`+response.data[numplus].stock_val+` readonly>`
+                switch(req.query.stock){
+                    default: 
+                        for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
+                            if(response.data[numplus].stock_val != null){
+                                catchdata[numplus] = {
+                                    '0': response.data[numplus].is1,
+                                    '1': response.data[numplus].kode_batch,
+                                    '2': response.data[numplus].satuan_jual,
+                                    '3': response.data[numplus].stock_now,
+                                    '4': `<input type="text" onkeyup="this.value=this.value.replace(/[^\\d]/,'')" class="form-control" value=`+response.data[numplus].stock_val+` readonly>`
+                                }
+                            }else{
+                                catchdata[numplus] = {
+                                    '0': response.data[numplus].is1,
+                                    '1': response.data[numplus].kode_batch,
+                                    '2': response.data[numplus].satuan_jual,
+                                    '3': response.data[numplus].stock_now,
+                                    '4': `<input type="text" onkeyup="this.value=this.value.replace(/[^\\d]/,'')" class="form-control resultstokawal" name="result[`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`, `+EncryptionLib.encrypt(req.query.gudangid.toString())+`]">`
+                                }
+                            }
                         }
-                    }else{
-                        catchdata[numplus] = {
-                            '0': response.data[numplus].is1,
-                            '1': response.data[numplus].kode_batch,
-                            '2': response.data[numplus].satuan_jual,
-                            '3': response.data[numplus].stock_now,
-                            '4': `<input type="text" onkeyup="this.value=this.value.replace(/[^\\d]/,'')" class="form-control resultstokawal" name="result[`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`, `+EncryptionLib.encrypt(req.query.gudangid.toString())+`]">`
+                        data = {
+                            draw: req.query.draw,
+                            status: true,
+                            recordsTotal: response.count,
+                            recordsFiltered: response.count,
+                            data: catchdata
                         }
-                    }
-                }
-                data = {
-                    draw: req.query.draw,
-                    status: true,
-                    recordsTotal: response.count,
-                    recordsFiltered: response.count,
-                    data: catchdata
+                        break;
+                    case 'opname':
+                        for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
+                            catchdata[numplus] = {
+                                '0': response.data[numplus].is1,
+                                '1': response.data[numplus].kode_batch,
+                                '2': response.data[numplus].satuan_jual,
+                                '3': `<div id="stock_now`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`">`+response.data[numplus].stock_now+`</div>`,
+                                '4': `<input type="hidden" name="validation[`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`]" val="" id="statusincreasedecrease`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`" /><input id="valinsertopname`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`" type="text" onkeyup="this.value=this.value.replace(/[^\\d]/,''); statusincreasedecrease('stock_now`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`', 'valinsertopname`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`', 'statusincreasedecrease`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="form-control resultstokopname" name="result[`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`, `+EncryptionLib.encrypt(req.query.gudangid.toString())+`]">`
+                            }
+                        }
+                        data = {
+                            draw: req.query.draw,
+                            status: true,
+                            recordsTotal: response.count,
+                            recordsFiltered: response.count,
+                            data: catchdata
+                        }
+                        break;
                 }
             }else{
                 for(var numplus = 0, len = response.data.length; numplus < len; numplus++){

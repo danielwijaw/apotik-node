@@ -92,4 +92,7 @@ router.get("/barang/:slug/delete", masterbarangControllerBackend.delete)
 // Stock
 router.post("/stockawal", csrfProtection, stockControllerBackend.stockawal)
 
+// Stock Opname
+router.post("/stockopname", csrfProtection, stockControllerBackend.stockopname)
+
 module.exports = router
