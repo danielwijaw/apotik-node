@@ -1,0 +1,282 @@
+link(rel='stylesheet', href='/css/datatables.min.css')
+script(src='/js/datatables.min.js')
+link(rel='stylesheet', href='/css/select2.min.css')
+script(src='/js/select2.full.min.js')
+| <style> 
+|   .high-light{background:#4e73df !important; color: white}
+|</style>
+div(class='col-xl-12 col-lg-12')
+    div(class='card shadow mb-4')
+        div(class='card-header py-3 d-flex flex-row align-items-center justify-content-between')
+            h6(class='m-0 font-weight-bold text-primary') Rencana Kebutuhan Barang <b id="gudangname"></b>
+        div(class='card-body')
+            div(class="col-md-12")
+                div(class="row")
+                    div(class="col-md-3")
+                        div(class="table-responsive" style="height: 27.5vh")
+                            table(id="datatables_gudangview" style="width:100%")
+                                thead
+                                    tr
+                                        th(width="80%") Daftar Gudang
+                                        th(width="20%") &nbsp;
+                                tbody
+                    div(class="col-md-9")
+                        div(class="col-md-12")
+                            div(id="showdata")
+                    div(class="col-md-12")
+                        hr
+                        div(id="showdatatables")
+
+//- Modal Show
+div(id="modalchild" class="modal fade" role="dialog")
+    div(class="modal-dialog modal-lg")
+        div(class="modal-content")
+            div(class="modal-header")
+                h4(class="modal-title" id="modalchildtitle")
+                button(type="button" class="close" data-dismiss="modal") &times;
+            div(class="modal-body")
+                div(id="modalchildform" class="col-md-12")
+
+script(type='text/javascript').
+    $(document).ready(function() {
+        $('#datatables_gudangview').DataTable({
+            "bFilter"   : false,
+            "paging"    : false,
+            "ordering"  : false,
+            "info"      : false,
+            "processing": true,
+            "serverSide": true,
+            "ajax"      : "#{host}/backend/gudang/data?stock=true",
+            "columnDefs": [{
+              "targets": [0,1],
+              "orderable": false,
+              "searchable": false 
+            }]
+        });
+    } );
+
+    function addcolor()
+    {
+        $('#datatables_gudangview tbody tr').click(function(){
+            $('#datatables_gudangview tbody tr').removeClass("high-light");
+            $(this).addClass("high-light");
+        });
+    }
+
+    function showgudang(id, name){
+        addcolor();
+        $("#gudangname").html("<b>"+name+"</b>");
+        $("#showdata").html(`
+            <form id="insertrencanakebutuhan" action="/backend/rencanakebutuhan" method="POST">
+                <input type="hidden" name="_csrf" value="#{csrfToken}">
+                <input type="hidden" name="gudang.id" value="`+id+`">
+                <input type="hidden" name="gudang.name" value="`+name+`">
+                <div class="row" style="margin-top: 1.5%">
+                    <div class="col-md-4">
+                        <label>Tanggal Rencana</label>
+                        <input type="date" name="plan_date" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Tanggal Diperlukan</label>
+                        <input type="date" name="required_date" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Nomor Rencana</label>
+                        <input name="nomor_rencana" type="text" class="form-control" value="Auto Generate" readonly>
+                    </div>
+                    <div class="col-md-3" style="margin-top :1.5%">
+                        <label>Catatan Tambahan : </label>
+                        <br/>
+                        <button id="btnsimpanokay" type="submit" class="btn btn-md btn-primary">Simpan</button>
+                    </div>
+                    <div class="col-md-9" style="margin-top :1.5%">
+                        <textarea name="notes" placeholder="Catatan Tambahan" class="form-control"></textarea>
+                    </div>
+                </div>
+            </form>
+        `);
+        $('#showdatatables').html(`
+            <div class="table-responsive">
+                <table id="datatables_tableshow" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th width="12.5%">Nomor Rencana</th>
+                            <th width="12.5%">Tanggal Rencana</th>
+                            <th width="12.5%">Tanggal Kebutuhan</th>
+                            <th width="22.5%">Catatan</th>
+                            <th width="10%">Verifikasi</th>
+                            <th width="17.5%">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        `);
+        $('#datatables_tableshow').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax"      : "#{host}/backend/rencanakebutuhanget?gudang_id="+id,
+            "columnDefs": [{
+              "targets": 5,
+              "orderable": false,
+              "searchable": false 
+            }]
+        });
+
+        sukses  = function(data) {
+                    resetheader();
+                    if(data.message == "success"){
+                        alert("Berhasil Menambah / Memperbarui Data Header Silahkan Melanjutkan Mengisi Data Kebutuhan Barang");
+                        modalchildshow(data.data);
+                        $("#btnsimpanokay").html('Simpan')
+                        $("#btnsimpanokay").removeAttr('disabled')
+                        return false
+                    }else{
+                        console.log(data)
+                        modalchildshow(data);
+                        $("#btnsimpanokay").html('Simpan')
+                        $("#btnsimpanokay").removeAttr('disabled')
+                    }
+                }
+        
+        submitform("insertrencanakebutuhan", sukses, "btnsimpanokay");
+    }
+
+    function modalchildshow(data){
+        $('#modalchild').modal('show')
+        $('#modalchildtitle').html('Rencana Kebutuhan Barang - '+data.k4)
+        $('#modalchildform').html(`
+            <div class="col-md-12">
+                <form id="insertbarang" action="/backend/rencanakebutuhanchild" method="POST">
+                    <input type="hidden" name="_csrf" value="#{csrfToken}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input name="nomor_parent" type="hidden" value="`+data.k4+`">
+                            <label>Supplier</label>
+                            <input type="hidden" name="supplier_name" id="supplier_name">
+                            <select name="supplier" class="form-control" id="supplier_dropdown" required></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Nama</label>
+                            <input type="hidden" name="barang_name" id="barang_name">
+                            <select name="nama_barang" class="form-control" id="nama_dropdown" required></select>
+                        </div>
+                        <div class="col-md-3" style="margin-top: 1.25%">
+                            <label>Harga Beli (Rp.)</label>
+                            <input name="harga_beli" type="text" class="form-control" required>
+                        </div>
+                        <div class="col-md-3" style="margin-top: 1.25%">
+                            <label>Kebutuhan(/satuan)</label>
+                            <input name="kebutuhan" type="text" class="form-control" required>
+                        </div>
+                        <div class="col-md-3" style="margin-top: 1.25%">
+                            <label>Diskon (%)</label>
+                            <input name="diskon" type="text" class="form-control" required>
+                        </div>
+                        <div class="col-md-3" style="margin-top: 1.25%">
+                            <label>PPN (%)</label>
+                            <input name="ppn" type="text" class="form-control" required><br/>
+                            <button class="btn btn-primary btn-sm" type="submit" id="simpanbarang">Simpan Barang</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-12">
+                <table id="datatables_barangview" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Nama Supplier</th>
+                            <th>Nama Barang</th>
+                            <th>Harga Beli (Rp.)</th>
+                            <th>Kebutuhan</th>
+                            <th>Diskon (%)</th>
+                            <th>PPN (%)</th>
+                            <th width="10px">&nbsp;</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        `);
+
+        var barangview = $('#datatables_barangview').DataTable({
+            "bFilter"   : false,
+            "paging"    : false,
+            "ordering"  : false,
+            "info"      : false,
+            "processing": true,
+            "serverSide": true,
+            "ajax"      : "#{host}/backend/rencanakebutuhanchild?number="+data.k4,
+        });
+
+        suksesx  = function(data) {
+                    if(data.message == "Inserting Data Success"){
+                        $("#simpanbarang").html('Simpan Barang')
+                        $("#simpanbarang").removeAttr('disabled')
+                        barangview.ajax.reload();
+                        alert("Berhasil Menambah Data Silahkan Melanjutkan Mengisi Data Kebutuhan Barang Lainya / Close");
+                        return false
+                    }else{
+                        console.log(data)
+                        barangview.ajax.reload();
+                        $("#simpanbarang").html('Simpan Barang')
+                        $("#simpanbarang").removeAttr('disabled')
+                    }
+                }
+        
+        submitform("insertbarang", suksesx, "simpanbarang");
+
+        $("#supplier_dropdown").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "#{host}/backend/supplier/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                dataType: 'json',
+            }
+        });
+        $('#supplier_dropdown').on('select2:select', function (e) {
+            $("#supplier_name").val(e.params.data.text);
+        });
+        $("#nama_dropdown").select2({
+            placeholder: 'Silahkan pilih...',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "#{host}/backend/detailbatch/data?search[value]=&start=0&length=100&select2=true&allow=true",
+                dataType: 'json',
+            }
+        });
+        $('#nama_dropdown').on('select2:select', function (e) {
+            $("#barang_name").val(e.params.data.text);
+        });
+    }
+
+    function updateheader(data){
+        $("input[name='plan_date']").val(data.k2);
+        $("input[name='required_date']").val(data.k3);
+        $("input[name='nomor_rencana']").val(data.k4);
+        $("textarea[name='notes']").val(data.notes);
+    }
+
+    function resetheader(){
+        $("input[name='plan_date']").val('');
+        $("input[name='required_date']").val('');
+        $("input[name='nomor_rencana']").val('Auto Generate');
+        $("textarea[name='notes']").val('');
+    }
+
+    function deleteheader(number){
+        var alert = confirm("Apakah Anda AKan Menghapus Rencana Kebutuhan Nomor ("+number+")?");
+        if (alert) {
+            window.location.href="#{host}/backend/rencanakebutuhangetdel?number="+number
+            return false;
+        }
+    }
+
+    function deletebarangdetail(number, barang){
+        var alert = confirm("Apakah Anda AKan Menghapus Barang ("+barang+")?");
+        if (alert) {
+            window.location.href="#{host}/backend/rencanakebutuhanchilddel?barang="+barang+"&number="+number
+            return false;
+        }
+    }

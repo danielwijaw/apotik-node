@@ -193,7 +193,7 @@ module.exports = {
             if(typeof req.query.select2!='undefined'){
                 for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
-                    response.data[numplus].slug = response.data[numplus].text.toLowerCase()
+                    response.data[numplus].text = response.data[numplus].text.toLowerCase()
                     response.data[numplus].slug = response.data[numplus].slug.replace(new RegExp(" ", 'g'), "_")
                 }
                 data = {
@@ -810,6 +810,14 @@ module.exports = {
     },
     
     supplierdata: function(req, res){
+        if(typeof req.query.order =='undefined'){
+            req.query.order =  {
+                0 :{
+                    column  : 1,
+                    dir     : "DESC"
+                }
+            }
+        }
         async.parallel({
             count: cb => Suppliermodel.countdata(req.con, req.query,
                 function(err, results) { 
@@ -839,25 +847,36 @@ module.exports = {
                 res.send(err)
                 return false
             }
-            for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
-                catchdata[numplus] = {
-                    '0': response.data[numplus].is0,
-                    '1': response.data[numplus].is1,
-                    '2': response.data[numplus].is2,
-                    '3': response.data[numplus].is3,
-                    '4': response.data[numplus].is4,
-                    '5': response.data[numplus].is5,
-                    '6': `
-                        <button data-toggle="modal" data-target="#modalsupplier" onclick="editsupplier('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
-                        <button onclick="hapussupplier('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+            if(typeof req.query.select2!='undefined'){
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
+                    response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
+                    response.data[numplus].text = response.data[numplus].is1+" ("+response.data[numplus].is3+")"
                 }
-            }
-            data = {
-                draw: req.query.draw,
-                status: true,
-                recordsTotal: response.count,
-                recordsFiltered: response.count,
-                data: catchdata
+                data = {
+                    results: response.data,
+                    pagination: false
+                }
+            }else{
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
+                    catchdata[numplus] = {
+                        '0': response.data[numplus].is0,
+                        '1': response.data[numplus].is1,
+                        '2': response.data[numplus].is2,
+                        '3': response.data[numplus].is3,
+                        '4': response.data[numplus].is4,
+                        '5': response.data[numplus].is5,
+                        '6': `
+                            <button data-toggle="modal" data-target="#modalsupplier" onclick="editsupplier('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class="btn btn-primary btn-sm">Edit</button>
+                            <button onclick="hapussupplier('`+EncryptionLib.encrypt(response.data[numplus].id.toString())+`')" class=\"btn btn-primary btn-sm\">Delete</button>`
+                    }
+                }
+                data = {
+                    draw: req.query.draw,
+                    status: true,
+                    recordsTotal: response.count,
+                    recordsFiltered: response.count,
+                    data: catchdata
+                }
             }
             res.send(data)
         })
@@ -1146,7 +1165,17 @@ module.exports = {
                         }
                         break;
                 }
-            }else{
+            }else if(typeof req.query.select2!='undefined'){
+                for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
+                    response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
+                    response.data[numplus].text = response.data[numplus].is1+" ("+response.data[numplus].is0+")"
+                }
+                data = {
+                    results: response.data,
+                    pagination: false
+                }
+            }
+            else{
                 for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     catchdata[numplus] = {
                         '0': response.data[numplus].is0,

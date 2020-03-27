@@ -46,6 +46,9 @@ module.exports = {
         }else{
             var search = "and JSON_SEARCH(UPPER(tm_data.child_value), 'all', UPPER('%"+data.search.value+"%')) IS NOT NULL"
         }
+        if(data.length == -1){
+            data.length = 1000
+        }
         con.getConnection(function(err, connection) {
             connection.query(`
                 SELECT

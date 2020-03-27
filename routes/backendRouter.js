@@ -10,6 +10,7 @@ const masterdataControllerBackend = require("../controller/backend/masterdataCon
 const settingControllerBackend = require("../controller/backend/settingController")
 const masterbarangControllerBackend = require("../controller/backend/masterbarangController")
 const stockControllerBackend = require("../controller/backend/stockController")
+const gudangControllerBackend = require("../controller/backend/gudangController")
 
 // Backend
 router.post("/login", csrfProtection, loginControllerBackend.login)
@@ -94,5 +95,13 @@ router.post("/stockawal", csrfProtection, stockControllerBackend.stockawal)
 
 // Stock Opname
 router.post("/stockopname", csrfProtection, stockControllerBackend.stockopname)
+
+// Rencana Kebutuhan
+router.post("/rencanakebutuhan", csrfProtection, gudangControllerBackend.rencanakebutuhanheader)
+router.get("/rencanakebutuhanget", gudangControllerBackend.rencanakebutuhangetheader)
+router.post("/rencanakebutuhanchild", csrfProtection, gudangControllerBackend.rencanakebutuhanchild)
+router.get("/rencanakebutuhanchild", gudangControllerBackend.getchildrenkebutuhan)
+router.get("/rencanakebutuhangetdel", gudangControllerBackend.rencanakebutuhangetdel)
+router.get("/rencanakebutuhanchilddel", gudangControllerBackend.rencanakebutuhanchilddel)
 
 module.exports = router

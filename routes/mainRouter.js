@@ -11,6 +11,7 @@ const apotekControllerFrontend          = require("../controller/frontend/apotek
 const masterdataControllerFrontend      = require("../controller/frontend/masterdataController")
 const masterbarangControllerFrontend    = require("../controller/frontend/masterbarangController")
 const stockControllerFrontend           = require("../controller/frontend/stockController")
+const gudangControllerFrontend           = require("../controller/frontend/gudangController")
 
 // Login
 router.get("/", loginControllerFrontend.main)
@@ -80,5 +81,9 @@ router.get("/stock/gudangview", stockControllerFrontend.stockgudang) //Aku lali 
 // Stock Opname
 router.get("/stockopname", stockControllerFrontend.stockopnameindex)
 router.get("/stockopname/dashboard", csrfProtection, stockControllerFrontend.stockopnamedashboard)
+
+// Stock Opname
+router.get("/rencanakebutuhan", gudangControllerFrontend.rencanakebutuhanindex)
+router.get("/rencanakebutuhan/dashboard", csrfProtection, gudangControllerFrontend.rencanakebutuhandashboard)
 
 module.exports = router
