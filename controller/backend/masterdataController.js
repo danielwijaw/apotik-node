@@ -193,7 +193,7 @@ module.exports = {
             if(typeof req.query.select2!='undefined'){
                 for(var numplus = 0, len = response.data.length; numplus < len; numplus++){
                     response.data[numplus].id = EncryptionLib.encrypt(response.data[numplus].id.toString())
-                    response.data[numplus].text = response.data[numplus].text.toLowerCase()
+                    response.data[numplus].slug = response.data[numplus].text.toLowerCase()
                     response.data[numplus].slug = response.data[numplus].slug.replace(new RegExp(" ", 'g'), "_")
                 }
                 data = {
