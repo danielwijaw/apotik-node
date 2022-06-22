@@ -9,7 +9,7 @@
   "author": "Daniel",
   "license": "ISC",
   "dependencies": {
-    "async": "^3.2.0",
+    "async": "^3.2.2",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "crypto": "^1.0.1",
